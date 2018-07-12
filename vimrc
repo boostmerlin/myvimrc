@@ -1,6 +1,20 @@
+"   This is the personal .vimrc file of merlin
+silent function! OSX()
+    return has('macunix')
+endfunction
+silent function! LINUX()
+    return has('unix') && !has('macunix') && !has('win32unix')
+endfunction
+silent function! WINDOWS()
+    return  (has('win32') || has('win64'))
+endfunction
+
+set nocompatible        " Must be first line
+if !WINDOWS()
+    set shell=/bin/sh
+endif
 " git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
 " for Vundle
-set nocompatible              " be iMproved, required
 filetype off                  " required
 
 "let vimrc take effect
@@ -12,11 +26,11 @@ call vundle#begin()
 " alternatively, pass a path where Vundle should install plugins
 "call vundle#begin('~/some/path/here')
 
-"  Shader Support
-Plugin 'http://git.oschina.net/qiuchangjie/ShaderHighLight'
-
 " let Vundle manage Vundle, required
 Plugin 'VundleVim/Vundle.vim'
+
+"  Shader Support
+Plugin 'http://git.oschina.net/qiuchangjie/ShaderHighLight'
 " 缩进提示插件
 Plugin 'nathanaelkane/vim-indent-guides' 
 " 关键字搜索, 依赖ack-grep
@@ -28,11 +42,11 @@ Plugin 'godlygeek/tabular'
 "!!多光标编辑
 Plugin 'terryma/vim-multiple-cursors'
 " 代码补全引擎, vim需要支持python的方式编译,插件较大默认不使用
-" Plugin 'Valloric/YouCompleteMe'
+"Plugin 'Valloric/YouCompleteMe'
 " Ctrl+p search
-Plugin 'kien/ctrlp.vim'
+Plugin 'ctrlpvim/ctrlp.vim'
 " 语法检查
-Plugin 'scrooloose/syntastic'
+" Plugin 'scrooloose/syntastic'
 " 配色方案
 Plugin 'altercation/vim-colors-solarized'
 "Plugin 'tomasr/molokai'
@@ -40,17 +54,16 @@ Plugin 'altercation/vim-colors-solarized'
 Plugin 'Lokaltog/vim-powerline'
 " 文件树
 Plugin 'scrooloose/nerdtree'
-Plugin 'Xuyuanp/nerdtree-git-plugin'
-
+Plugin 'airblade/vim-gitgutter'
 " ==============代码支持插件
 " lua 支持
-"Plugin 'xolox/vim-lua-ftplugin'
-"Plugin 'xolox/vim-misc'
+Plugin 'xolox/vim-lua-ftplugin'
+Plugin 'xolox/vim-misc'
 
 "=============================
 
 " vim-markdown 也依赖版tabular
-Plugin 'plasticboy/vim-markdown'
+"Plugin 'plasticboy/vim-markdown'
 " markdown 实时预览, need: python 2/3
 " pip install markdown?
 " pip install pygemnts?
@@ -147,21 +160,24 @@ if has('mksession') && has('viminfo')
     " 保存 undo 历史
     set undodir=~/.undo_history/
     set undofile
-    map <LEADER>ss :mksession! my.vim<cr> :wviminfo! my.viminfo<cr>
+    map <LEADER>ss :mksession! ~/my.vim<cr> :wviminfo! ~/my.viminfo<cr>
     " 恢复快捷键
-    map <LEADER>rs :source my.vim<cr> :rviminfo my.viminfo<cr>
+    map <LEADER>rs :source ~/my.vim<cr> :rviminfo ~/my.viminfo<cr>
 endif
-" need ack
-if has('win32') || has('win64')
+if WINDOWS()
     "解决菜单乱码  
     source $VIMRUNTIME/delmenu.vim  
     source $VIMRUNTIME/menu.vim  
     "解决consle输出乱码  
     language messages zh_CN.utf-8
+    "有些符号不支持出现乱码，修改为这个字体
+    "set guifont=* 打开字体列表
+    set guifont=Consolas:h12
     "let g:ctrlp_user_command = 'dir %s /-n /b /s /a:-d-h'  " Windows
 else
     " let g:ctrlp_user_command = 'find %s -type f'        " MacOSX/Linux 
 endif
+" need ack
 " 需要安装ag https://github.com/ggreer/the_silver_searcher
 let g:ctrlsf_ackprg = 'ag'
 nnoremap <C-F>t :CtrlSFToggle<CR>
@@ -181,8 +197,8 @@ map <C-E> :NERDTreeToggle<CR>
 ""当NERDTree为剩下的唯一窗口时自动关闭
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 ""修改树的显示图标
-let g:NERDTreeDirArrowExpandable = '+'
-let g:NERDTreeDirArrowCollapsible = '-'
+let g:NERDTreeDirArrowExpandable = '▸'
+let g:NERDTreeDirArrowCollapsible = '▾'
 let NERDTreeAutoCenter=1
 " 显示行号
 let NERDTreeShowLineNumbers=1
@@ -194,6 +210,9 @@ let NERDTreeWinSize=35
 let g:nerdtree_tabs_open_on_console_startup=1
 " 忽略一下文件的显示
 let NERDTreeIgnore=['\.pyc','\~$','\.swp']
+" 当没有参数时自动打开
+"autocmd StdinReadPre * let s:std_in=1
+"autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
 
 "窗口移动 
 ":only :on
@@ -202,10 +221,18 @@ map <C-K> <C-w>k
 map <C-H> <C-w>h
 map <C-L> <C-w>l
 
-" 历史文件
+" 历史文件,存在于viminfo中
 nmap <C-r> :browse oldfiles<CR>
-
 " Lua config
-"let g:lua_compiler_name = '/usr/local/bin/luac'
+let b:locate_cmd='which '
+if WINDOWS()
+    let b:locate_cmd='where '
+endif
+let g:lua_compiler_name = system(b:locate_cmd . 'luac')
 "let g:lua_check_syntax = 0
 "let g:lua_check_globals = 0
+"execute 'cd' expand('%:h')
+nnoremap <silent> <leader>. :cd %:h<CR>
+" map quick-fix next and previous
+nmap <F3> :cn<CR>
+nmap <S-F3> :cp<CR>
