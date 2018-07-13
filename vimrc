@@ -45,8 +45,6 @@ Plugin 'terryma/vim-multiple-cursors'
 "Plugin 'Valloric/YouCompleteMe'
 " Ctrl+p search
 Plugin 'ctrlpvim/ctrlp.vim'
-" 语法检查
-" Plugin 'scrooloose/syntastic'
 " 配色方案
 Plugin 'altercation/vim-colors-solarized'
 "Plugin 'tomasr/molokai'
@@ -54,11 +52,20 @@ Plugin 'altercation/vim-colors-solarized'
 Plugin 'Lokaltog/vim-powerline'
 " 文件树
 Plugin 'scrooloose/nerdtree'
+"https://github.com/scrooloose/nerdcommenter
+Plugin 'scrooloose/nerdcommenter'
 Plugin 'airblade/vim-gitgutter'
+Plugin 'tpope/vim-repeat'
+"匹配(,",{,[控制
+Plugin 'tpope/vim-surround'
+
+"Plugin 'majutsushi/tagbar'
 " ==============代码支持插件
+" 语法检查
+Plugin 'scrooloose/syntastic'
 " lua 支持
-Plugin 'xolox/vim-lua-ftplugin'
-Plugin 'xolox/vim-misc'
+"Plugin 'xolox/vim-lua-ftplugin'
+"Plugin 'xolox/vim-misc'
 
 "=============================
 
@@ -86,7 +93,8 @@ filetype plugin on
 " see :h vundle for more details or wiki for FAQ
 " Put your non-Plugin stuff after this line
 
-set fileencodings=ucs-bom,utf-8,utf-16,gbk,chinese,big5,gb18030
+"set fileencodings=ucs-bom,utf-8,utf-16,gbk,chinese,big5,gb18030
+set fileencodings=ucs-bom,utf-8,cp936,gb18030,big5,euc-jp,euc-kr,latin1
 set enc=utf-8
 let mapleader=','
 " status bar
@@ -126,7 +134,7 @@ set sts=4
 
 set background=dark
 "show colorcolumn
-set cc=81
+set cc=120
 " 有gui, 使用的是gvim
 if has('gui_running')
     colorscheme solarized
@@ -194,6 +202,7 @@ set completeopt=longest,menu
 " NERDTree 配置：
 " 关闭NERDTree快捷键
 map <C-E> :NERDTreeToggle<CR>
+map <leader>e :NERDTreeFind<CR>
 ""当NERDTree为剩下的唯一窗口时自动关闭
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 ""修改树的显示图标
@@ -220,19 +229,36 @@ map <C-J> <C-w>j
 map <C-K> <C-w>k
 map <C-H> <C-w>h
 map <C-L> <C-w>l
-
+"let g:gitgutter_terminal_reports_focus=0
 " 历史文件,存在于viminfo中
-nmap <C-r> :browse oldfiles<CR>
-" Lua config
-let b:locate_cmd='which '
-if WINDOWS()
-    let b:locate_cmd='where '
-endif
-let g:lua_compiler_name = system(b:locate_cmd . 'luac')
-"let g:lua_check_syntax = 0
-"let g:lua_check_globals = 0
+nmap <F4> :browse oldfiles<CR>
+"let g:syntastic_<filetype>_checkers = ['<checker-name>']
+":SyntasticCheck <checker>
+":help syntastic-checkers
+" Lua config, make sure luac in PATH
+" let g:syntastic_lua_checkers = ['luac', 'lua_check']
+
 "execute 'cd' expand('%:h')
 nnoremap <silent> <leader>. :cd %:h<CR>
+nnoremap <silent> <leader><leader>. :exec("NERDTree ".expand('%:h'))<CR>
+
 " map quick-fix next and previous
+"function! Vgrep(pat)
+"    let l:ext=expand('%:e')
+"    let l:cword=expand('<cword>')
+"    let l:cmd1='vimgrep/' . l:cword . '/j '
+"    if a:pat
+"        let l:cmd2='*.' . l:ext
+"    else
+"        let l:cmd2='**/*.' . l:ext
+"    endif
+"    execute l:cmd1 . l:cmd2
+"    execute 'copen'
+"endfunction
+noremap <F6> :silent execute("vimgrep/" . expand("<cword>") . '/j ' . '*.' . expand('%:e'))<CR> \| :copen<CR>
+noremap <C-F6> :silent execute("vimgrep/" . expand("<cword>") . '/j ' . '**/*.' . expand('%:e'))<CR> \| :copen<CR>
 nmap <F3> :cn<CR>
 nmap <S-F3> :cp<CR>
+"run shell
+nmap <leader>r :!
+nmap <leader>ri :r !
