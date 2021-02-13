@@ -1,4 +1,5 @@
-"   This is the personal .vimrc file of merlin
+" This is the personal .vimrc file of merlin
+
 silent function! OSX()
     return has('macunix')
 endfunction
@@ -8,90 +9,84 @@ endfunction
 silent function! WINDOWS()
     return  (has('win32') || has('win64'))
 endfunction
+silent function! ASYNC()
+    return  (has('nvim') || has('patch-8.0.902'))
+endfunction
 
 set nocompatible        " Must be first line
 if !WINDOWS()
     set shell=/bin/sh
 endif
-" git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
-" for Vundle
-filetype off                  " required
 
 "let vimrc take effect
 autocmd! BufWritePost $MYVIMRC source %
 
-" set the runtime path to include Vundle and initialize
-set rtp+=~/.vim/bundle/Vundle.vim
-call vundle#begin()
-" alternatively, pass a path where Vundle should install plugins
-"call vundle#begin('~/some/path/here')
-
-" let Vundle manage Vundle, required
-Plugin 'VundleVim/Vundle.vim'
+" use vim-plug, see https://github.com/junegunn/vim-plug
+" Specify a directory for plugins
+" - For Neovim: stdpath('data') . '/plugged'
+" - Avoid using standard Vim directory names like 'plugin'
+call plug#begin()
 
 "  Shader Support
-Plugin 'http://git.oschina.net/qiuchangjie/ShaderHighLight'
+Plug 'http://git.oschina.net/qiuchangjie/ShaderHighLight'
 " 缩进提示插件
-Plugin 'nathanaelkane/vim-indent-guides' 
+Plug 'nathanaelkane/vim-indent-guides' 
 " 关键字搜索, 依赖ack-grep
-Plugin 'dyng/ctrlsf.vim'
+Plug 'dyng/ctrlsf.vim'
 " 光标移动辅助
-Plugin 'Lokaltog/vim-easymotion'
+Plug 'Lokaltog/vim-easymotion'
+" grep 增强，看是否ctrlsf补充
+Plug 'dkprice/vim-easygrep'
 " 对齐辅助
-Plugin 'godlygeek/tabular'
-"!!多光标编辑
-Plugin 'terryma/vim-multiple-cursors'
-" 代码补全引擎, vim需要支持python的方式编译,插件较大默认不使用
-"Plugin 'Valloric/YouCompleteMe'
+Plug 'godlygeek/tabular'
+"!多光标编辑
+Plug 'terryma/vim-multiple-cursors'
+" 新代码补全引擎, see https://github.com/neoclide/coc.nvim
+" Plug 'neoclide/coc.nvim', {'branch': 'release'}
 " Ctrl+p search
-Plugin 'ctrlpvim/ctrlp.vim'
+Plug 'ctrlpvim/ctrlp.vim'
 " 配色方案
-Plugin 'altercation/vim-colors-solarized'
-"Plugin 'tomasr/molokai'
+if has('gui_running')
+    Plug 'altercation/vim-colors-solarized'
+else
+    Plug 'tomasr/molokai'
+endif
 " statusbar增强
-Plugin 'Lokaltog/vim-powerline'
+Plug 'vim-airline/vim-airline'
+" Plug 'vim-airline/vim-airline-themes'
 " 文件树
-Plugin 'scrooloose/nerdtree'
+Plug 'scrooloose/nerdtree'
+Plug 'Xuyuanp/nerdtree-git-plugin'
 "https://github.com/scrooloose/nerdcommenter
-Plugin 'scrooloose/nerdcommenter'
-Plugin 'airblade/vim-gitgutter'
-Plugin 'tpope/vim-repeat'
-"匹配(,",{,[控制
-Plugin 'tpope/vim-surround'
-
-"Plugin 'majutsushi/tagbar'
-" ==============代码支持插件
+Plug 'scrooloose/nerdcommenter'
+" version control status
+Plug 'mhinz/vim-signify'
 " 语法检查
-Plugin 'scrooloose/syntastic'
-" lua 支持
-"Plugin 'xolox/vim-lua-ftplugin'
-"Plugin 'xolox/vim-misc'
+Plug 'dense-analysis/ale'
+Plug 'tpope/vim-repeat'
+"匹配(,",{,[控制
+Plug 'tpope/vim-surround'
+" auto complete pair
+Plug 'jiangmiao/auto-pairs'
+" 括号着色
+Plug 'luochen1990/rainbow'
+" ==============代码支持插件
+Plug 'editorconfig/editorconfig-vim'
 
 "=============================
 
+" Plug 'majutsushi/tagbar'
+
 " vim-markdown 也依赖版tabular
-"Plugin 'plasticboy/vim-markdown'
-" markdown 实时预览, need: python 2/3
-" pip install markdown?
-" pip install pygemnts?
+Plug 'plasticboy/vim-markdown'
 " 中国人写的，支持下, https://github.com/iamcco/markdown-preview.vim
-" Plugin 'iamcco/mathjax-support-for-mkdp'
-" Plugin 'iamcco/markdown-preview.vim'
+Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
+
+" 代码片段支持
+" Plug 'SirVer/ultisnips'
 
 " All of your Plugins must be added before the following line
-call vundle#end()            " required
-filetype plugin indent on    " required
-" To ignore plugin indent changes, instead use:
-filetype plugin on
-"
-" Brief help
-" :PluginList       - lists configured plugins
-" :PluginInstall    - installs plugins; append `!` to update or just :PluginUpdate
-" :PluginSearch foo - searches for foo; append `!` to refresh local cache
-" :PluginClean      - confirms removal of unused plugins; append `!` to auto-approve removal
-"
-" see :h vundle for more details or wiki for FAQ
-" Put your non-Plugin stuff after this line
+call plug#end()            " required
 
 "set fileencodings=ucs-bom,utf-8,utf-16,gbk,chinese,big5,gb18030
 set fileencodings=ucs-bom,utf-8,cp936,gb18030,big5,euc-jp,euc-kr,latin1
@@ -122,10 +117,14 @@ set guioptions-=T
 let g:SimpylFold_docstring_preview=1
 let g:netrw_liststyle = 3
 
+let g:mkdp_echo_preview_url = 1
+" MD 关闭时自动关闭预览
+let g:mkdp_auto_close = 1
+
 syntax enable
 syntax on
-
 filetype indent on
+
 set autoindent
 " 总是使用空格
 set expandtab
@@ -139,14 +138,16 @@ set cc=120
 if has('gui_running')
     colorscheme solarized
 else
-    colorscheme desert
+    colorscheme molokai
+    let g:rehash256 = 1
+    let g:molokai_original = 1
 endif
 
 " 随 vim 自启动, indent-guides 插件似乎依赖配色方案，自定？
 " highlight Normal ctermfg=red ctermbg=yellow
-let g:indent_guides_auto_colors = 0
-autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd  guibg=red   ctermbg=3
-autocmd VimEnter,Colorscheme * :hi IndentGuidesEven guibg=green ctermbg=4
+let g:indent_guides_auto_colors = 1
+" autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd  guibg=red   ctermbg=3
+" autocmd VimEnter,Colorscheme * :hi IndentGuidesEven guibg=green ctermbg=4
 let g:indent_guides_enable_on_vim_startup=1
 " 从第二层开始可视化显示缩进
 let g:indent_guides_start_level=2
@@ -160,6 +161,11 @@ set foldenable
 "set nofoldenable
 "method also could be syntax
 set foldmethod=syntax
+
+if ASYNC()
+    " 默认 updatetime 4000ms, 在异步模式下可以加快 
+    set updatetime=300
+endif
 
 " 保存快捷键
 if has('mksession') && has('viminfo')
@@ -185,9 +191,15 @@ if WINDOWS()
 else
     " let g:ctrlp_user_command = 'find %s -type f'        " MacOSX/Linux 
 endif
-" need ack
+
 " 需要安装ag https://github.com/ggreer/the_silver_searcher
 let g:ctrlsf_ackprg = 'ag'
+if ASYNC()
+    let g:ctrlsf_search_mode = 'async'
+endif
+let g:ctrlsf_winsize = '35%'
+" bottom
+let g:ctrlsf_position = 'right'
 nnoremap <C-F>t :CtrlSFToggle<CR>
 inoremap <C-F>t <Esc>:CtrlSFToggle<CR>
 nmap     <C-F>f <Plug>CtrlSFPrompt
@@ -199,12 +211,48 @@ let g:ycm_confirm_extra_conf=0 "关闭加载.ycm_extra_conf.py提示
 map <LEADER>g :YcmCompleter GoToDefinitionElseDeclaration<CR>
 set completeopt=longest,menu
 
+let g:airline_theme='dark'
+
+"python with virtualenv support
+" if has('python3')
+  " silent! python3 1
+" endif
+" py3 << EOF
+" import os
+" import sys
+" if 'VIRTUAL_ENV' in os.environ:
+  " project_base_dir = os.environ['VIRTUAL_ENV']
+  " activate_this = os.path.join(project_base_dir, 'bin/activate_this.py')
+  " exec(compile(open(activate_this, "rb").read(), activate_this, 'exec'), dict(__file__=activate_this))
+" EOF
+
+let g:ale_linters = {
+\   'c++': ['clang'],
+\}
+" let g:ale_sign_column_always = 1
+let g:airline#extensions#ale#enabled = 1
+
 " NERDTree 配置：
 " 关闭NERDTree快捷键
 map <C-E> :NERDTreeToggle<CR>
 map <leader>e :NERDTreeFind<CR>
 ""当NERDTree为剩下的唯一窗口时自动关闭
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+" NERDTree settings
+" 忽略以下文件的显示
+let NERDTreeIgnore=['\.pyc','\~$','\.swp','__pycache__','\.git$','\.DS_Store']
+" NERDTree git 扩展
+let g:NERDTreeGitStatusIndicatorMapCustom = {
+    \ "Modified"  : "✹",
+    \ "Staged"    : "✚",
+    \ "Untracked" : "✭",
+    \ "Renamed"   : "➜",
+    \ "Unmerged"  : "═",
+    \ "Deleted"   : "✖",
+    \ "Dirty"     : "✗",
+    \ "Clean"     : "✔︎",
+    \ "Unknown"   : "?"
+    \ }
 ""修改树的显示图标
 let g:NERDTreeDirArrowExpandable = '▸'
 let g:NERDTreeDirArrowCollapsible = '▾'
@@ -217,8 +265,37 @@ let NERDTreeShowHidden=0
 let NERDTreeWinSize=35
 " 在终端启动vim时，共享NERDTree
 let g:nerdtree_tabs_open_on_console_startup=1
-" 忽略一下文件的显示
-let NERDTreeIgnore=['\.pyc','\~$','\.swp']
+let g:rainbow_active = 1
+" 'guifgs': 一个guifg的列表 (:h highlight-guifg), 即GUI界面的括号颜色, 将按顺序循环使用
+" 'guis': 一个gui的列表 (:h highlight-gui), 将按顺序循环使用
+" 'ctermfgs': 一个ctermfg的列表 (:h highlight-ctermfg), 即终端下的括号颜色
+" 'cterms': 一个cterm的列表 (:h highlight-cterm)
+" 'operators': 描述你希望哪些运算符跟着与它同级的括号一起高亮(注意：留意需要转义的特殊字符，更多样例见这里, 你也可以读vim帮助 :syn-pattern)
+" 'parentheses': 一个关于括号定义的列表, 每一个括号的定义包含形如以下的部分: start=/(/, step=/,/, stop=/)/, fold, contained, containedin=someSynNames, contains=@Spell. 各个部分具体含义可参考 :h syntax, 其中 step 为本插件的扩展定义, 表示括号中间需要高亮的运算符.
+" 'separately': 针对文件类型(由&ft决定)作不同的配置,未被单独设置的文件类型使用*下的配置,值为0表示仅对该类型禁用插件,值为"default"表示使用针对该类型的默认兼容配置 (注意, 默认兼容配置可能随着该插件版本的更新而改变, 如果你不希望它改变, 那么你应该将它拷贝一份放到你的vimrc文件里).
+" 省略某个字段以使用默认设置
+let g:rainbow_conf = {
+	\	'guifgs': ['royalblue3', 'darkorange3', 'seagreen3', 'firebrick'],
+	\	'ctermfgs': ['lightblue', 'lightyellow', 'lightcyan', 'lightmagenta'],
+	\	'operators': '_,_',
+	\	'parentheses': ['start=/(/ end=/)/ fold', 'start=/\[/ end=/\]/ fold', 'start=/{/ end=/}/ fold'],
+	\	'separately': {
+	\		'*': {},
+	\		'tex': {
+	\			'parentheses': ['start=/(/ end=/)/', 'start=/\[/ end=/\]/'],
+	\		},
+	\		'lisp': {
+	\			'guifgs': ['royalblue3', 'darkorange3', 'seagreen3', 'firebrick', 'darkorchid3'],
+	\		},
+	\		'vim': {
+	\			'parentheses': ['start=/(/ end=/)/', 'start=/\[/ end=/\]/', 'start=/{/ end=/}/ fold', 'start=/(/ end=/)/ containedin=vimFuncBody', 'start=/\[/ end=/\]/ containedin=vimFuncBody', 'start=/{/ end=/}/ fold containedin=vimFuncBody'],
+	\		},
+	\		'html': {
+	\			'parentheses': ['start=/\v\<((area|base|br|col|embed|hr|img|input|keygen|link|menuitem|meta|param|source|track|wbr)[ >])@!\z([-_:a-zA-Z0-9]+)(\s+[-_:a-zA-Z0-9]+(\=("[^"]*"|'."'".'[^'."'".']*'."'".'|[^ '."'".'"><=`]*))?)*\>/ end=#</\z1># fold'],
+	\		},
+	\		'css': 0,
+	\	}
+	\}
 " 当没有参数时自动打开
 "autocmd StdinReadPre * let s:std_in=1
 "autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
@@ -229,14 +306,8 @@ map <C-J> <C-w>j
 map <C-K> <C-w>k
 map <C-H> <C-w>h
 map <C-L> <C-w>l
-"let g:gitgutter_terminal_reports_focus=0
 " 历史文件,存在于viminfo中
 nmap <F4> :browse oldfiles<CR>
-"let g:syntastic_<filetype>_checkers = ['<checker-name>']
-":SyntasticCheck <checker>
-":help syntastic-checkers
-" Lua config, make sure luac in PATH
-" let g:syntastic_lua_checkers = ['luac', 'lua_check']
 
 "execute 'cd' expand('%:h')
 nnoremap <silent> <leader>. :cd %:h<CR>
@@ -257,8 +328,29 @@ nnoremap <silent> <leader><leader>. :exec("NERDTree ".expand('%:h'))<CR>
 "endfunction
 noremap <F6> :silent execute("vimgrep/" . expand("<cword>") . '/j ' . '*.' . expand('%:e'))<CR> \| :copen<CR>
 noremap <C-F6> :silent execute("vimgrep/" . expand("<cword>") . '/j ' . '**/*.' . expand('%:e'))<CR> \| :copen<CR>
+" nmap <SPACE> /
 nmap <F3> :cn<CR>
 nmap <S-F3> :cp<CR>
 "run shell
 nmap <leader>r :!
 nmap <leader>ri :r !
+
+" markdown preview
+nmap <silent> <F8> <Plug>MarkdownPreview        " for normal mode
+imap <silent> <F8> <Plug>MarkdownPreview        " for insert mode
+nmap <silent> <C-F8> <Plug>MarkdownPreviewStop    " for normal mode
+imap <silent> <C-F8> <Plug>MarkdownPreviewStop    " for insert mode
+
+set termwinsize=13x0
+nmap <silent> <LEADER>t :botright term<CR>
+" 退出term
+tnoremap <Esc> <C-\><C-n>:q!<CR>
+if WINDOWS()
+    if executable('powershell')
+        set shell=powershell
+    endif
+else
+    if executable('/bin/zsh')
+        set shell=/bin/zsh
+    endif
+endif
