@@ -206,9 +206,6 @@ nmap     <C-F>f <Plug>CtrlSFPrompt
 vmap     <C-F>f <Plug>CtrlSFVwordPath
 nmap     <C-F>c <Plug>CtrlSFCwordPath
 
-let g:ycm_autoclose_preview_window_after_completion=1
-let g:ycm_confirm_extra_conf=0 "关闭加载.ycm_extra_conf.py提示
-map <LEADER>g :YcmCompleter GoToDefinitionElseDeclaration<CR>
 set completeopt=longest,menu
 
 let g:airline_theme='dark'
