@@ -1,5 +1,63 @@
 " This is the personal .vimrc file of merlin
 
+let s:code_monkey=1
+
+"---------------------------------------
+"           大小写转换
+"---------------------------------------
+"   g~~ : 行翻转
+"   vEU : 字大写(广义字)
+"   vE~ : 字翻转(广义字)
+"   ~   将光标下的字母改变大小写
+"   3~  将下3个字母改变其大小写
+"   g~w 字翻转
+"   U   将可视模式下的字母全改成大写字母
+"   gUU 将当前行的字母改成大写
+"   u   将可视模式下的字母全改成小写
+"   guu 将当前行的字母全改成小写
+
+"---------------------------------------
+"           多文档操作
+"---------------------------------------
+"    用 :ls! 可以显示出当前所有的buffer
+"   :bn                 跳转到下一个buffer
+"   :bp                 跳转到上一个buffer
+"   :wn                 存盘当前文件并跳转到下一个
+"   :wp                 存盘当前文件并跳转到上一个
+"   :bd                 把这个文件从buffer列表中做掉
+"   :b 3                跳到第3个buffer
+"   :b main             跳到一个名字中包含main的buffer
+
+" ---------------------------
+"   基础命令
+" ---------------------------
+"   '.                  它移动光标到上一次的修改行
+"   `.                  它移动光标到上一次的修改点
+"   .                   重复上次命令
+"   <C-o> :             依次沿着你的跳转记录向回跳, 可在文件间跳
+"   <C-i> :             依次沿着你的跳转记录向前跳
+"   :history :          列出历史命令记录
+"   q/ :                搜索命令历史的窗口
+"   q: :                命令行命令历史的窗口
+"   g ctrl+g            计算文件字符
+
+" ---------------------------
+"   tab操作
+" ---------------------------
+" 普通模式下的 切换标签页 的命令是 gt, gT: go tab
+" :tabnew 新建标签
+" :tabc 关闭标签, :tabo 关闭其他所有标签 tab other closed
+
+" :tabfirst 切换到第一个标签
+" :tablast 切换到最后一个标签
+" :tabp = tab previous
+" :tabn = tab next
+
+" 查看标签
+" :tabs tab show, 或者 tab的复数: tabs
+ 
+" :tabe: tab edit : 在标签页中 打开 文件.
+
 silent function! OSX()
     return has('macunix')
 endfunction
@@ -11,6 +69,10 @@ silent function! WINDOWS()
 endfunction
 silent function! ASYNC()
     return  (has('nvim') || has('patch-8.0.902'))
+endfunction
+
+function! CODER()
+    return s:code_monkey == 1
 endfunction
 
 set nocompatible        " Must be first line
@@ -41,8 +103,6 @@ Plug 'dkprice/vim-easygrep'
 Plug 'godlygeek/tabular'
 "!多光标编辑
 Plug 'terryma/vim-multiple-cursors'
-" 新代码补全引擎, see https://github.com/neoclide/coc.nvim
-" Plug 'neoclide/coc.nvim', {'branch': 'release'}
 " Ctrl+p search
 Plug 'ctrlpvim/ctrlp.vim'
 " 配色方案
@@ -57,12 +117,10 @@ Plug 'vim-airline/vim-airline'
 " 文件树
 Plug 'scrooloose/nerdtree'
 Plug 'Xuyuanp/nerdtree-git-plugin'
-"https://github.com/scrooloose/nerdcommenter
+"代码注释助手 https://github.com/scrooloose/nerdcommenter
 Plug 'scrooloose/nerdcommenter'
 " version control status
 Plug 'mhinz/vim-signify'
-" 语法检查
-Plug 'dense-analysis/ale'
 Plug 'tpope/vim-repeat'
 "匹配(,",{,[控制
 Plug 'tpope/vim-surround'
@@ -70,8 +128,14 @@ Plug 'tpope/vim-surround'
 Plug 'jiangmiao/auto-pairs'
 " 括号着色
 Plug 'luochen1990/rainbow'
-" ==============代码支持插件
+
 Plug 'editorconfig/editorconfig-vim'
+" ==============代码支持插件
+" 语法检查
+Plug 'dense-analysis/ale'
+
+" 新代码补全引擎, see https://github.com/neoclide/coc.nvim
+" Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
 "=============================
 
@@ -125,9 +189,13 @@ syntax enable
 syntax on
 filetype indent on
 
-set autoindent
+"设定文件浏览器目录为当前目录
+set bsdir=buffer
+
+set smartindent
 " 总是使用空格
 set expandtab
+set smarttab
 set sw=4
 set sts=4
 
@@ -351,3 +419,27 @@ else
         set shell=/bin/zsh
     endif
 endif
+
+" 返回当前时间
+func! GetTimeInfo()
+    "return strftime('%Y-%m-%d %A %H:%M:%S')
+    return strftime('%Y-%m-%d %H:%M:%S')
+endfunction
+
+" 插入模式按 Ctrl + D(ate) 插入当前时间
+imap <C-d> <C-r>=GetTimeInfo()<cr>
+
+function! JumpToTab(num)
+    let s:count = a:num
+    exe "tabfirst"
+    exe "tabnext" s:count
+endfunction
+ 
+function! TabInit()
+    for i in range(1, 9)
+        exe "map <M-" . i . "> :call JumpToTab(" . i . ")<CR>"
+    endfor
+    exe "map <M-0> :call JumpToTab(10)<CR>"
+endfunction
+ 
+autocmd VimEnter * call TabInit()
