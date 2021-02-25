@@ -130,32 +130,36 @@ Plug 'jiangmiao/auto-pairs'
 Plug 'luochen1990/rainbow'
 
 Plug 'editorconfig/editorconfig-vim'
-" ==============代码支持插件
-" 语法检查
-Plug 'dense-analysis/ale'
-
-" 新代码补全引擎, see https://github.com/neoclide/coc.nvim
-" Plug 'neoclide/coc.nvim', {'branch': 'release'}
-
-"=============================
-
-" Plug 'majutsushi/tagbar'
-
 " vim-markdown 也依赖版tabular
 Plug 'plasticboy/vim-markdown'
 " 中国人写的，支持下, https://github.com/iamcco/markdown-preview.vim
 Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
+" ==============代码支持插件
 
-" 代码片段支持
-" Plug 'SirVer/ultisnips'
+if CODER()
+    " 语法检查
+    Plug 'dense-analysis/ale'
+
+    " 新代码补全引擎, see https://github.com/neoclide/coc.nvim
+    " Plug 'neoclide/coc.nvim', {'branch': 'release'}
+
+    " Plug 'majutsushi/tagbar'
+
+    if has('python3')
+        " 代码片段支持
+        Plug 'SirVer/ultisnips'
+    endif
+endif
+
 
 " All of your Plugins must be added before the following line
 call plug#end()            " required
 
+let mapleader=','
+
 "set fileencodings=ucs-bom,utf-8,utf-16,gbk,chinese,big5,gb18030
 set fileencodings=ucs-bom,utf-8,cp936,gb18030,big5,euc-jp,euc-kr,latin1
 set enc=utf-8
-let mapleader=','
 " status bar
 set laststatus=2
 set ruler
@@ -165,7 +169,7 @@ set incsearch
 " ignorecase
 set ic
 " vim laststatus>=2
-" set wildmenu
+set wildmenu
 
 "  移除gui 菜单
 " set cursorline
@@ -443,3 +447,12 @@ function! TabInit()
 endfunction
  
 autocmd VimEnter * call TabInit()
+
+if has('python3')
+    let g:UltiSnipsExpandTrigger="<tab>"
+    " 使用 tab 切换下一个触发点，shit+tab 上一个触发点
+    let g:UltiSnipsJumpForwardTrigger="<tab>"
+    let g:UltiSnipsJumpBackwardTrigger="<S-tab>"
+    " 使用 UltiSnipsEdit 命令时垂直分割屏幕
+    let g:UltiSnipsEditSplit="vertical"
+endif
