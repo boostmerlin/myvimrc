@@ -1,6 +1,6 @@
 " This is the personal .vimrc file of merlin
 
-let s:code_monkey=1
+let s:code_monkey=0
 
 "---------------------------------------
 "           大小写转换
@@ -93,18 +93,20 @@ call plug#begin()
 Plug 'http://git.oschina.net/qiuchangjie/ShaderHighLight'
 " 缩进提示插件
 Plug 'nathanaelkane/vim-indent-guides' 
-" 关键字搜索, 依赖ack-grep
-Plug 'dyng/ctrlsf.vim'
 " 光标移动辅助
 Plug 'Lokaltog/vim-easymotion'
-" grep 增强，看是否ctrlsf补充
-Plug 'dkprice/vim-easygrep'
 " 对齐辅助
 Plug 'godlygeek/tabular'
-"!多光标编辑
+" 多光标编辑
 Plug 'terryma/vim-multiple-cursors'
+
 " Ctrl+p search
 Plug 'ctrlpvim/ctrlp.vim'
+" 关键字搜索, 依赖ack-grep
+Plug 'dyng/ctrlsf.vim'
+" 这个很强大，使用rg可以考虑替换 ctrlsf 和 ctrlp
+" Plug 'Yggdroot/LeaderF', { 'do': ':LeaderfInstallCExtension' }
+
 " 配色方案
 if has('gui_running')
     Plug 'altercation/vim-colors-solarized'
@@ -138,22 +140,27 @@ Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': 
 
 if CODER()
     " 语法检查
-    Plug 'dense-analysis/ale'
+    " Plug 'dense-analysis/ale'
 
     " 新代码补全引擎, see https://github.com/neoclide/coc.nvim
-    " Plug 'neoclide/coc.nvim', {'branch': 'release'}
-
-    " Plug 'majutsushi/tagbar'
+    Plug 'neoclide/coc.nvim', {'branch': 'release'}
+    
+    " Plug 'codota/tabnine-vim'
 
     if has('python3')
         " 代码片段支持
-        Plug 'SirVer/ultisnips'
+        " Plug 'SirVer/ultisnips'
     endif
 endif
 
 
 " All of your Plugins must be added before the following line
 call plug#end()            " required
+
+if WINDOWS()
+    " PlugClean
+    command! MyPlugClean :set shell=cmd.exe shellcmdflag=/c noshellslash guioptions-=! <bar> noau PlugClean
+endif
 
 let mapleader=','
 
@@ -170,6 +177,21 @@ set incsearch
 set ic
 " vim laststatus>=2
 set wildmenu
+
+" coc.vim ---
+" 该设置项可以无需存盘就可以从某个被修改的文件中切换出去
+set hidden
+set nobackup
+set nowritebackup
+if has("patch-8.1.1564")
+  " Recently vim can merge signcolumn and number column into one
+  set signcolumn=number
+else
+  set signcolumn=yes
+endif
+
+
+"--------
 
 "  移除gui 菜单
 " set cursorline
@@ -259,9 +281,7 @@ if WINDOWS()
     "有些符号不支持出现乱码，修改为这个字体
     "set guifont=* 打开字体列表
     set guifont=Consolas:h12
-    "let g:ctrlp_user_command = 'dir %s /-n /b /s /a:-d-h'  " Windows
 else
-    " let g:ctrlp_user_command = 'find %s -type f'        " MacOSX/Linux 
 endif
 
 " 需要安装ag https://github.com/ggreer/the_silver_searcher
@@ -269,14 +289,27 @@ let g:ctrlsf_ackprg = 'ag'
 if ASYNC()
     let g:ctrlsf_search_mode = 'async'
 endif
-let g:ctrlsf_winsize = '35%'
+let g:ctrlsf_winsize = '45%'
 " bottom
-let g:ctrlsf_position = 'right'
+let g:ctrlsf_position = 'bottom'
+
+let g:ctrlsf_context = '-B 5 -A 3'
+
 nnoremap <C-F>t :CtrlSFToggle<CR>
 inoremap <C-F>t <Esc>:CtrlSFToggle<CR>
 nmap     <C-F>f <Plug>CtrlSFPrompt
 vmap     <C-F>f <Plug>CtrlSFVwordPath
 nmap     <C-F>c <Plug>CtrlSFCwordPath
+
+noremap <leader>fb :CtrlPBuffer<CR>
+noremap <leader>fm :CtrlPMRU<CR>
+noremap <leader>f :CtrlPMixed<CR>
+
+let g:ctrlp_custom_ignore = {
+\ 'dir':  '\v[\/]\.(git|hg|svn|vscode|idea)$|build$|target$',
+\ 'file': '\v\.(exe|so|dll|class|pyc)$',
+\ 'link': '.*',
+\ } 
 
 set completeopt=longest,menu
 
@@ -295,11 +328,6 @@ let g:airline_theme='dark'
   " exec(compile(open(activate_this, "rb").read(), activate_this, 'exec'), dict(__file__=activate_this))
 " EOF
 
-let g:ale_linters = {
-\   'c++': ['clang'],
-\}
-" let g:ale_sign_column_always = 1
-let g:airline#extensions#ale#enabled = 1
 
 " NERDTree 配置：
 " 关闭NERDTree快捷键
@@ -309,9 +337,11 @@ map <leader>e :NERDTreeFind<CR>
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 " NERDTree settings
 " 忽略以下文件的显示
-let NERDTreeIgnore=['\.pyc','\~$','\.swp','__pycache__','\.git$','\.DS_Store']
-" NERDTree git 扩展
-let g:NERDTreeGitStatusIndicatorMapCustom = {
+let NERDTreeIgnore=[ 
+            \ '\.pyc','\~$','\.swp','__pycache__','\.git$','\.DS_Store','\.vscode$','\.idea$'
+            \]
+
+" NERDTree dERDTreeGitStatusIndicatorMapCustom = {
     \ "Modified"  : "✹",
     \ "Staged"    : "✚",
     \ "Untracked" : "✭",
@@ -382,19 +412,6 @@ nmap <F4> :browse oldfiles<CR>
 nnoremap <silent> <leader>. :cd %:h<CR>
 nnoremap <silent> <leader><leader>. :exec("NERDTree ".expand('%:h'))<CR>
 
-" map quick-fix next and previous
-"function! Vgrep(pat)
-"    let l:ext=expand('%:e')
-"    let l:cword=expand('<cword>')
-"    let l:cmd1='vimgrep/' . l:cword . '/j '
-"    if a:pat
-"        let l:cmd2='*.' . l:ext
-"    else
-"        let l:cmd2='**/*.' . l:ext
-"    endif
-"    execute l:cmd1 . l:cmd2
-"    execute 'copen'
-"endfunction
 noremap <F6> :silent execute("vimgrep/" . expand("<cword>") . '/j ' . '*.' . expand('%:e'))<CR> \| :copen<CR>
 noremap <C-F6> :silent execute("vimgrep/" . expand("<cword>") . '/j ' . '**/*.' . expand('%:e'))<CR> \| :copen<CR>
 " nmap <SPACE> /
@@ -410,7 +427,20 @@ imap <silent> <F8> <Plug>MarkdownPreview        " for insert mode
 nmap <silent> <C-F8> <Plug>MarkdownPreviewStop    " for normal mode
 imap <silent> <C-F8> <Plug>MarkdownPreviewStop    " for insert mode
 
-set termwinsize=13x0
+let g:multi_cursor_use_default_mapping=0
+
+let g:multi_cursor_start_word_key      = '<C-n>'
+let g:multi_cursor_select_all_word_key = '<S-n>'
+let g:multi_cursor_start_key           = 'g<C-n>'
+let g:multi_cursor_select_all_key      = 'g<A-n>'
+let g:multi_cursor_next_key            = '<C-n>'
+let g:multi_cursor_prev_key            = '<C-p>'
+let g:multi_cursor_skip_key            = '<C-x>'
+let g:multi_cursor_quit_key            = '<Esc>'
+
+if has('terminal')
+    set termwinsize=13x0
+endif
 nmap <silent> <LEADER>t :botright term<CR>
 " 退出term
 tnoremap <Esc> <C-\><C-n>:q!<CR>
@@ -448,11 +478,24 @@ endfunction
  
 autocmd VimEnter * call TabInit()
 
-if has('python3')
+if CODER() && has('python3')
     let g:UltiSnipsExpandTrigger="<tab>"
     " 使用 tab 切换下一个触发点，shit+tab 上一个触发点
     let g:UltiSnipsJumpForwardTrigger="<tab>"
     let g:UltiSnipsJumpBackwardTrigger="<S-tab>"
     " 使用 UltiSnipsEdit 命令时垂直分割屏幕
     let g:UltiSnipsEditSplit="vertical"
+
+    " let g:ale_sign_column_always = 1
+    let g:airline#extensions#ale#enabled = 1
+    let g:ale_fix_on_save = 0
+    let g:ale_sign_error = 'x'
+    let g:ale_sign_warning = '!'
+    let g:ale_linters = {
+    \   'c++': ['clang'],
+    \}
+
+    let g:ale_fixers = {
+    \   'javascript': ['eslint'],
+    \}
 endif
