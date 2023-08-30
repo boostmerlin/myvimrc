@@ -89,6 +89,8 @@ autocmd! BufWritePost $MYVIMRC source %
 " - Avoid using standard Vim directory names like 'plugin'
 call plug#begin()
 
+" Vim HardTime
+Plug 'takac/vim-hardtime'
 "  Shader Support
 Plug 'http://git.oschina.net/qiuchangjie/ShaderHighLight'
 " 缩进提示插件
@@ -162,7 +164,7 @@ if WINDOWS()
     command! MyPlugClean :set shell=cmd.exe shellcmdflag=/c noshellslash guioptions-=! <bar> noau PlugClean
 endif
 
-let mapleader=','
+let mapleader = "\<space>"
 
 "set fileencodings=ucs-bom,utf-8,utf-16,gbk,chinese,big5,gb18030
 set fileencodings=ucs-bom,utf-8,cp936,gb18030,big5,euc-jp,euc-kr,latin1
@@ -170,7 +172,7 @@ set enc=utf-8
 " status bar
 set laststatus=2
 set ruler
-set nu
+set relativenumber
 set hlsearch
 set incsearch
 " ignorecase
@@ -499,3 +501,7 @@ if CODER() && has('python3')
     \   'javascript': ['eslint'],
     \}
 endif
+
+" vim hard time ON:
+let g:hardtime_default_on = 1
+let g:hardtime_showmsg = 1
