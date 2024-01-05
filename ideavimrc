@@ -1,26 +1,36 @@
-""" Map leader to space ---------------------
-let mapleader=","
+  """ Map leader to space ---------------------
+let mapleader = "\<space>"
 
 """ Plugins  --------------------------------
-set surround
+set surround " https://github.com/tpope/vim-surround/blob/master/doc/surround.txt
 set multiple-cursors
-set commentary
-set easymotion
+set commentary  " 注释插件：gcc当前行, gcap整, V+gc选择后
+set argtextobj
+set easymotion " https://github.com/AlexPl292/IdeaVim-EasyMotion
+set textobj-entire
 set ReplaceWithRegister
+set textobj-indent              " 选择相同缩进的对象 vii vai vaI
+
+""" Plugin settings -------------------------
+let g:argtextobj_pairs="[:],(:),<:>"  
 
 """ Common settings -------------------------
+" https://github.com/JetBrains/ideavim/wiki/IdeaVim-Plugins
+set smartcase                   " 有一个或以上大写字母时仍大小写敏感
 set showmode
 set so=5
 set incsearch
 set nu
+set relativenumber
+set clipboard+=unnamed " Vim 的默认寄存器和系统剪贴板共享
 
 """ Idea specific settings ------------------
 set ideajoin
 set ideastatusicon=gray
 set idearefactormode=keep
+set ideavimsupport+=dialog      " 在对话框编辑器中禁用 IdeaVim
 
 """ Mappings --------------------------------
-map <leader>s <Plug>(easymotion-s)
 map <leader>f <Plug>(easymotion-f)
 
 map <leader>d <Action>(Debug)
@@ -28,9 +38,28 @@ map <leader>r <Action>(RenameElement)
 map <leader>c <Action>(Stop)
 map <leader>z <Action>(ToggleDistractionFreeMode)
 
+map <leader>s <Action>(SelectInProjectView)
 map <leader>a <Action>(Annotate)
 map <leader>h <Action>(Vcs.ShowTabbedFileHistory)
-map <leader>e <Action>(GotoNextError)
+map <S-Space> <Action>(GotoNextError)
 
 map <leader>b <Action>(ToggleLineBreakpoint)
 map <leader>o <Action>(FileStructurePopup)
+
+nnoremap <Leader>or :action RecentFiles<CR> " 打开过的历史记录文件夹
+nnoremap <Leader>op :action ShowFilePath<CR> " 显示当前文件的文件路径
+nnoremap <Leader>m :action ShowPopupMenu<CR> " 弹出右键菜单
+
+" built-in navigation to navigated items works better
+nnoremap <c-o> :action Back<cr>
+nnoremap <c-i> :action Forward<cr>
+" but preserve ideavim defaults
+nnoremap g<c-o> <c-o>
+nnoremap g<c-i> <c-i>
+
+" built in search looks better
+nnoremap / :action Find<cr>
+" but preserve ideavim search
+nnoremap g/ /
+
+nnoremap g0 :set relativenumber!<CR> " 切换显示相对行号

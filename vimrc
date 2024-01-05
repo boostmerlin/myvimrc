@@ -1,6 +1,7 @@
 " This is the personal .vimrc file of merlin
 
 let s:code_monkey=0
+let g:user_dir='~/.vim'
 
 "---------------------------------------
 "           大小写转换
@@ -89,8 +90,16 @@ autocmd! BufWritePost $MYVIMRC source %
 " - Avoid using standard Vim directory names like 'plugin'
 call plug#begin()
 
+" undo 历史查看
+Plug 'simnalamburt/vim-mundo'
+
+" 剪贴版查看 "
+Plug 'junegunn/vim-peekaboo'
+
 " Vim HardTime
+
 Plug 'takac/vim-hardtime'
+
 "  Shader Support
 Plug 'http://git.oschina.net/qiuchangjie/ShaderHighLight'
 " 缩进提示插件
@@ -101,6 +110,9 @@ Plug 'Lokaltog/vim-easymotion'
 Plug 'godlygeek/tabular'
 " 多光标编辑
 Plug 'terryma/vim-multiple-cursors'
+
+" Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+" Plug 'junegunn/fzf.vim'
 
 " Ctrl+p search
 Plug 'ctrlpvim/ctrlp.vim'
@@ -175,11 +187,20 @@ set ruler
 set relativenumber
 set hlsearch
 set incsearch
+set shortmess=atI "不显示援助
+" Ctrl a/x 递增适用于字母
+set nrformats+=alpha
+
+" 使用pP可以操作系统剪贴板，而不是使用*+
+set clipboard=unnamed
+
+set ignorecase smartcase
 " ignorecase
-set ic
+" set ic
 " vim laststatus>=2
 set wildmenu
 
+" set spell
 " coc.vim ---
 " 该设置项可以无需存盘就可以从某个被修改的文件中切换出去
 set hidden
@@ -192,19 +213,18 @@ else
   set signcolumn=yes
 endif
 
-
-"--------
-
-"  移除gui 菜单
-" set cursorline
-" set cursorcolumn
-" set gcr=a:block-blinkon0
-set guioptions-=l
-set guioptions-=L
-set guioptions-=r
-set guioptions-=R
-set guioptions-=m
-set guioptions-=T
+if has("gui_running")
+    "  移除gui 菜单
+    " set cursorline
+    " set cursorcolumn
+    " set gcr=a:block-blinkon0
+    set guioptions-=l
+    set guioptions-=L
+    set guioptions-=r
+    set guioptions-=R
+    set guioptions-=m
+    set guioptions-=T
+endif
 
 let g:SimpylFold_docstring_preview=1
 let g:netrw_liststyle = 3
@@ -226,6 +246,7 @@ set expandtab
 set smarttab
 set sw=4
 set sts=4
+set lazyredraw
 
 set background=dark
 "show colorcolumn
@@ -263,14 +284,22 @@ if ASYNC()
     set updatetime=300
 endif
 
+" 保存 undo 历史
+set undodir=~/.vim/undo_dir
+set undofile
+map <LEADER>su :wundo! ~/.vim/undo_dir/history.undo<cr>
+map <LEADER>ru :MundoToggle<cr>
+
 " 保存快捷键
 if has('mksession') && has('viminfo')
     " 设置环境保存项
+    set viewoptions+=options
+    set viewoptions+=unix
+    set viewdir=$HOME/.vim/view
+    map <LEADER>sv :mkview!
+    map <LEADER>rv :loadview!
     set sessionoptions="blank,buffers,globals,localoptions,tabpages,sesdir,folds,help,options,resize,winpos,winsize"
-    " 保存 undo 历史
-    set undodir=~/.undo_history/
-    set undofile
-    map <LEADER>ss :mksession! ~/my.vim<cr> :wviminfo! ~/my.viminfo<cr>
+    map <LEADER>ss :mksession! ~/.vim/my.vim<cr> :wviminfo! ~/.vim/my.viminfo<cr>
     " 恢复快捷键
     map <LEADER>rs :source ~/my.vim<cr> :rviminfo ~/my.viminfo<cr>
 endif
@@ -505,3 +534,10 @@ endif
 " vim hard time ON:
 let g:hardtime_default_on = 1
 let g:hardtime_showmsg = 1
+
+inoremap <c-u> <c-g>u<c-u>
+inoremap <c-w> <c-g>u<c-w>
+"将tab替换为空格
+nmap <LEADER>ts :%s/\t/    /g<CR>
+
+nnoremap g0 :set relativenumber!<CR> " 切换显示相对行号
