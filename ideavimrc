@@ -1,21 +1,54 @@
   """ Map leader to space ---------------------
 let mapleader = "\<space>"
 
+sethandler <C-V> i:ide n-x-v:vim
+
 """ Plugins  --------------------------------
+" https://github.com/JetBrains/ideavim/wiki/IdeaVim-Plugins
+
+"  Old text                  Command     New text ~
+"  "Hello *world!"           ds"         Hello world!
+"  [123+4*56]/2              cs])        (123+456)/2
+"  "Look ma, I'm *HTML!"     cs"<q>      <q>Look ma, I'm HTML!</q>
+"  if *x>3 {                 ysW(        if ( x>3 ) {
+"  my $str = *whee!;         vllllS'     my $str = 'whee!';
+"
+"  Old text                  Command     New text ~
+"  "Hello *world!"           ds"         Hello world!
+"  (123+4*56)/2              ds)         123+456/2
+"  <div>Yo!*</div>           dst         Yo!
+"
+"  Old text                  Command     New text ~
+"  "Hello *world!"           cs"'        'Hello world!'
+"  "Hello *world!"           cs"<q>      <q>Hello world!</q>
+"  (123+4*56)/2              cs)]        [123+456]/2
+"  (123+4*56)/2              cs)[        [ 123+456 ]/2
+"  <div>Yo!*</div>           cst<p>      <p>Yo!</p>
+"
+"  Old text                  Command     New text ~
+"  Hello w*orld!             ysiw)       Hello (world)!
+"
+"  Old text                  Command     New text ~
+"      Hello w*orld!         yssB            {Hello world!}
+
 set surround " https://github.com/tpope/vim-surround/blob/master/doc/surround.txt
 set multiple-cursors
 set commentary  " 注释插件：gcc当前行, gcap整, V+gc选择后
-set argtextobj
-set easymotion " https://github.com/AlexPl292/IdeaVim-EasyMotion
-set textobj-entire
-set ReplaceWithRegister
+set easymotion  " https://github.com/AlexPl292/IdeaVim-EasyMotion
+
+" [count]["x]gr{motion}	Replace {motion} text with the contents of register x.
+" [count]["x]grr		Replace [count] lines with the contents of register x.
+"         To replace from the cursor position to the end of the
+"         line use ["x]gr$
+" {Visual}["x]gr		Replace the selection with the contents of register x.
+set ReplaceWithRegister  " *gr* *grr* *v_gr*
+set argtextobj  " 函数参数操作, daa, cia, via
 set textobj-indent              " 选择相同缩进的对象 vii vai vaI
 
 """ Plugin settings -------------------------
 let g:argtextobj_pairs="[:],(:),<:>"  
 
 """ Common settings -------------------------
-" https://github.com/JetBrains/ideavim/wiki/IdeaVim-Plugins
 set smartcase                   " 有一个或以上大写字母时仍大小写敏感
 set showmode
 set so=5
@@ -61,5 +94,8 @@ nnoremap g<c-i> <c-i>
 nnoremap / :action Find<cr>
 " but preserve ideavim search
 nnoremap g/ /
+
+" idea replace
+vnoremap gs :action Replace<cr>
 
 nnoremap g0 :set relativenumber!<CR> " 切换显示相对行号
