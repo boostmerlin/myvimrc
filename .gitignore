@@ -1,0 +1,5 @@
+*.swp
+temp/
+
+lazyvim.json
+lazy-lock.json

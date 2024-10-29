@@ -1,0 +1,127 @@
+  """ Map leader to space ---------------------
+let mapleader = "\<space>"
+
+sethandler <C-V> i:ide n-x-v:vim
+
+""" Plugins  --------------------------------
+" https://github.com/JetBrains/ideavim/wiki/IdeaVim-Plugins
+
+"  Old text                  Command     New text ~
+"  "Hello *world!"           ds"         Hello world!
+"  [123+4*56]/2              cs])        (123+456)/2
+"  "Look ma, I'm *HTML!"     cs"<q>      <q>Look ma, I'm HTML!</q>
+"  if *x>3 {                 ysW(        if ( x>3 ) {
+"  my $str = *whee!;         vllllS'     my $str = 'whee!';
+"
+"  Old text                  Command     New text ~
+"  "Hello *world!"           ds"         Hello world!
+"  (123+4*56)/2              ds)         123+456/2
+"  <div>Yo!*</div>           dst         Yo!
+"
+"  Old text                  Command     New text ~
+"  "Hello *world!"           cs"'        'Hello world!'
+"  "Hello *world!"           cs"<q>      <q>Hello world!</q>
+"  (123+4*56)/2              cs)]        [123+456]/2
+"  (123+4*56)/2              cs)[        [ 123+456 ]/2
+"  <div>Yo!*</div>           cst<p>      <p>Yo!</p>
+"
+"  Old text                  Command     New text ~
+"  Hello w*orld!             ysiw)       Hello (world)!
+"
+"  Old text                  Command     New text ~
+"      Hello w*orld!         yssB            {Hello world!}
+
+set surround " https://github.com/tpope/vim-surround/blob/master/doc/surround.txt
+set multiple-cursors
+set commentary  " 注释插件：gcc当前行, gcap整, V+gc选择后
+set easymotion  " https://github.com/AlexPl292/IdeaVim-EasyMotion
+" [count]["x]gr{motion}	Replace {motion} text with the contents of register x.
+" [count]["x]grr		Replace [count] lines with the contents of register x.
+"         To replace from the cursor position to the end of the
+"         line use ["x]gr$
+" {Visual}["x]gr		Replace the selection with the contents of register x.
+set ReplaceWithRegister  " *gr* *grr* *v_gr*
+set argtextobj  " 函数参数操作, daa, cia, via
+set textobj-indent              " 选择相同缩进的对象 vii vai vaI
+
+""" Plugin settings -------------------------
+let g:argtextobj_pairs="[:],(:),<:>"  
+
+set which-key
+" disable the timeout option
+set notimeout
+" increase the timeoutlen (default: 1000), don't add space around the equal sign
+set timeoutlen=5000
+
+""" Common settings -------------------------
+set smartcase                   " 有一个或以上大写字母时仍大小写敏感
+set showmode
+set so=5
+set incsearch
+set nu
+set relativenumber
+set clipboard+=unnamed " Vim 的默认寄存器和系统剪贴板共享
+
+""" Idea specific settings ------------------
+set ideajoin
+set ideastatusicon=gray
+set idearefactormode=keep
+set ideavimsupport+=dialog      " 在对话框编辑器中禁用 IdeaVim
+
+""" Mappings --------------------------------
+nmap s <Plug>(easymotion-s)
+nmap f <Plug>(easymotion-f)
+nmap F <Plug>(easymotion-F)
+nmap t <Plug>(easymotion-t)
+nmap T <Plug>(easymotion-T)
+
+map <leader>d <Action>(Debug)
+map <leader>c <Action>(Stop)
+
+" git
+map <leader>gb <Action>(Annotate)
+map <leader>gh <Action>(Vcs.ShowTabbedFileHistory)
+
+" code
+map <S-Space> <Action>(GotoNextError)
+map <leader>cr <Action>(RenameElement)
+
+" debug
+map <leader>b <Action>(ToggleLineBreakpoint)
+map <leader>o <Action>(FileStructurePopup)
+
+" find/find
+nnoremap <Leader>fr :action RecentFiles<CR> " 打开过的历史记录文件夹
+nnoremap <Leader>fp :action ShowFilePath<CR> " 显示当前文件的文件路径
+"快速 导航/查找
+let g:WhichKeyDesc_FindOrFormat_FindFile = "<leader>ff 查找文件"
+nmap <leader>ff <action>(GotoFile)
+let g:WhichKeyDesc_FindOrFormat_FindFileLocation = "<leader>fl 定位文件位置"
+map <leader>fl <Action>(SelectInProjectView)
+
+nnoremap <Leader>m :action ShowPopupMenu<CR> " 弹出右键菜单
+" window
+map <leader>wz <Action>(ToggleDistractionFreeMode)
+
+" built-in navigation to navigated items works better
+nnoremap <c-o> :action Back<cr>
+nnoremap <c-i> :action Forward<cr>
+" but preserve ideavim defaults
+nnoremap g<c-o> <c-o>
+nnoremap g<c-i> <c-i>
+
+" built in search looks better
+nnoremap / :action Find<cr>
+" but preserve ideavim search
+nnoremap g/ /
+
+" idea replace
+" vnoremap <leader>sr :action Replace<cr>
+" 切换显示相对行号
+nnoremap g0 :set relativenumber!<CR>
+
+nmap <CR> o<Esc>
+nmap <S-Enter> O<Esc>
+
+" custom not working, don't know why
+let g:surround_no_mappings = 0
