@@ -1,0 +1,17 @@
+# see https://neovide.dev/config-file.html
+# Linux	$XDG_CONFIG_HOME/neovide/config.toml or $HOME/.config/neovide/config.toml
+# macOS	$XDG_CONFIG_HOME/neovide/config.toml or $HOME/.config/neovide/config.toml
+# Windows	{FOLDERID_RoamingAppData}/neovide/config.toml
+
+[font]
+size = 14
+hinting = "full"
+edging = "antialias"
+
+[[font.normal]]
+family = "0xProto Nerd Font Mono"
+style = "W400"
+
+[[font.bold]]
+family = "0xProto Nerd Font Mono"
+style = "W600"

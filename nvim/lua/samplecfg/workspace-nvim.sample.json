@@ -1,0 +1,9 @@
+{
+  "im_select": 
+  {
+    "default_command": "im-select-mspy",
+    "default_im_select": "2052-0"
+  },
+  "lang": [],
+  "font": "0xProto Nerd Font Mono:h11"
+}

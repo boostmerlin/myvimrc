@@ -3,4 +3,6 @@ temp/
 
 lazyvim.json
 lazy-lock.json
-workspace.json
+workspace-nvim.json
+config.toml
+ginit.vim

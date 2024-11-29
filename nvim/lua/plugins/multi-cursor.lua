@@ -21,7 +21,7 @@ return {
     },
     {
       mode = { "n" },
-      "<leader>mc",
+      "<leader>mn",
       "<cmd>MCunderCursor<cr>",
       desc = "MC under Char",
     },
@@ -38,7 +38,7 @@ return {
       desc = "MC on Pattern",
     },
     {
-      "<C-j>",
+      "<C-n>",
       "<leader>mm",
       desc = "MC on Word or Visual",
       remap = true,

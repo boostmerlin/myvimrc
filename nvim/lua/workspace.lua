@@ -1,3 +1,4 @@
+-- mv workspace-nvim.json to config path
 local M = {}
 
 local function is_list(t)
@@ -60,7 +61,7 @@ local function encode(value, indent)
 end
 
 M.data = {}
-local path = vim.fn.stdpath("config") .. "/workspace.json"
+local path = vim.fn.stdpath("config") .. "/workspace-nvim.json"
 
 function M.load()
   local f = io.open(path, "r")
@@ -78,6 +79,7 @@ function M.load()
       end
     end
   end
+  return M
 end
 
 function M.save()
@@ -103,4 +105,16 @@ function M.get(...)
   return M.getFromData(M.data, ...)
 end
 
+function M.getOrDefault(...)
+  local args = { ... }
+  local n = #args
+  assert(n >= 2, "getOrDefault needs at least 2 arguments")
+  local frontArgs = {}
+  for i = 1, n - 1 do
+    frontArgs[i] = args[i]
+  end
+  local default = args[n]
+  local value = M.getFromData(M.data, unpack(frontArgs))
+  return value == nil and default or value
+end
 return M
