@@ -1,3 +1,4 @@
+" Sample config for nvim-qt
 " Windows: %LOCALAPPDATA%\nvim\ginit.vim
 " MacOS: ~/.config/nvim/ginit.vim
 " Linux: ~/.config/nvim/ginit.vim
