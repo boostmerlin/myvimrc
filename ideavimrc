@@ -32,7 +32,6 @@ sethandler <C-V> i:ide n-x-v:vim
 "      Hello w*orld!         yssB            {Hello world!}
 
 set surround " https://github.com/tpope/vim-surround/blob/master/doc/surround.txt
-set multiple-cursors
 set commentary  " 注释插件：gcc当前行, gcap整, V+gc选择后
 set easymotion  " https://github.com/AlexPl292/IdeaVim-EasyMotion
 " [count]["x]gr{motion}	Replace {motion} text with the contents of register x.
@@ -43,6 +42,13 @@ set easymotion  " https://github.com/AlexPl292/IdeaVim-EasyMotion
 set ReplaceWithRegister  " *gr* *grr* *v_gr*
 set argtextobj  " 函数参数操作, daa, cia, via
 set textobj-indent              " 选择相同缩进的对象 vii vai vaI
+set multiple-cursors
+nmap <C-n> <Plug>NextWholeOccurrence
+xmap <C-n> <Plug>NextWholeOccurrence
+nmap g<C-n> <Plug>NextOccurrence
+xmap g<C-n> <Plug>NextOccurrence
+xmap <C-x> <Plug>SkipOccurrence
+xmap <C-p> <Plug>RemoveOccurrence
 
 """ Plugin settings -------------------------
 let g:argtextobj_pairs="[:],(:),<:>"  
@@ -98,6 +104,7 @@ let g:WhichKeyDesc_FindOrFormat_FindFile = "<leader>ff 查找文件"
 nmap <leader>ff <action>(GotoFile)
 let g:WhichKeyDesc_FindOrFormat_FindFileLocation = "<leader>fl 定位文件位置"
 map <leader>fl <Action>(SelectInProjectView)
+nmap <leader>rr <Action>(RenameFile)
 
 nnoremap <Leader>m :action ShowPopupMenu<CR> " 弹出右键菜单
 " window
