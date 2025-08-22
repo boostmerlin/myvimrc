@@ -13,7 +13,7 @@ return {
       lualine_z = {
         "encoding",
         "fileformat",
-        -- lint_progress,
+        lint_progress,
       },
     },
   },

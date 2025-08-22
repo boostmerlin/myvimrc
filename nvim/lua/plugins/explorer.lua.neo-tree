@@ -23,7 +23,7 @@ return {
           reveal_force_cwd = true, -- change cwd without asking if needed
         })
       end,
-      desc = "Explore current file or working directory",
+      desc = "Explore current file or directory",
     },
     {
       "<leader>e",

@@ -3,10 +3,15 @@
 -- Add any additional keymaps here
 
 -- 映射leader + .为切换到当前文件所在目录
-vim.keymap.set("n", "<leader>..", ":cd %:p:h<CR>:pwd<CR>", { noremap = true, silent = true, desc = "CD by Buffer" })
+vim.keymap.set(
+  "n",
+  "<leader>jB",
+  ":cd %:p:h<CR>:pwd<CR>",
+  { noremap = true, silent = false, desc = "CD to Current Buffer" }
+)
 
 if LazyVim then
-  vim.keymap.set("n", "<leader>.r", function()
+  vim.keymap.set("n", "<leader>jR", function()
     vim.cmd("cd " .. LazyVim.root())
   end, { desc = "CD to LazyRoot" })
 end
