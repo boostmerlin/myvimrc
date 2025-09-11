@@ -108,7 +108,7 @@ nmap <leader>rr <Action>(RenameFile)
 
 nnoremap <Leader>m :action ShowPopupMenu<CR> " 弹出右键菜单
 " window
-map <leader>wz <Action>(ToggleDistractionFreeMode)
+map <leader>uz <Action>(ToggleDistractionFreeMode)
 
 " built-in navigation to navigated items works better
 nnoremap <c-o> :action Back<cr>

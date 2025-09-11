@@ -2,7 +2,7 @@ return {
   "nvim-neo-tree/neo-tree.nvim",
   keys = {
     {
-      "<leader>.E",
+      "<leader>je",
       mode = { "n" },
       function()
         local reveal_file = vim.fn.expand("%:p")

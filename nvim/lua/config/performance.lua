@@ -2,12 +2,11 @@
 -- 添加到 options.lua
 
 -- 禁用一些不必要的功能以提高性能
-vim.g.loaded_python3_provider = 0
+vim.g.loaded_python3_provider = 0  -- 打开python文件会卡一会，设置为0则不会卡
 vim.g.loaded_node_provider = 0     -- 如果不使用 Node.js 提供程序
 vim.g.loaded_perl_provider = 0     -- 如果不使用 Perl 提供程序
 vim.g.loaded_ruby_provider = 0     -- 如果不使用 Ruby 提供程序
 
--- 动态启用 provider 的函数
 local M = {}
 
 -- 启用 Python3 provider
