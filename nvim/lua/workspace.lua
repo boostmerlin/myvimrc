@@ -61,12 +61,14 @@ local function encode(value, indent)
 end
 
 M.data = {}
+local loaded = false
 local path = vim.fn.stdpath("config") .. "/workspace-nvim.json"
 
 function M.load()
   local f = io.open(path, "r")
   if f then
     local data = f:read("*a")
+    -- vim.notify("Loading workspace config from " .. path)
     f:close()
     local ok, json = pcall(vim.json.decode, data, { luanil = { object = true, array = true } })
     if ok then
@@ -79,6 +81,7 @@ function M.load()
       end
     end
   end
+  loaded = true
   return M
 end
 
@@ -90,7 +93,7 @@ function M.save()
   end
 end
 
-function M.getFromData(data, ...)
+local function getFromData(data, ...)
   local value = data
   for _, v in ipairs({ ... }) do
     value = value[v]
@@ -102,10 +105,17 @@ function M.getFromData(data, ...)
 end
 
 function M.get(...)
-  return M.getFromData(M.data, ...)
+  if not loaded then
+    M.load()
+  end
+  return getFromData(M.data, ...)
 end
 
 function M.getOrDefault(...)
+  if not loaded then
+    M.load()
+  end
+
   local args = { ... }
   local n = #args
   assert(n >= 2, "getOrDefault needs at least 2 arguments")
@@ -114,7 +124,7 @@ function M.getOrDefault(...)
     frontArgs[i] = args[i]
   end
   local default = args[n]
-  local value = M.getFromData(M.data, unpack(frontArgs))
+  local value = getFromData(M.data, unpack(frontArgs))
   return value == nil and default or value
 end
 return M
