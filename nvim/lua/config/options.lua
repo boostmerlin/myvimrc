@@ -9,3 +9,5 @@ require("config.performance")
 -- in this case.
 vim.g.lazyvim_blink_main = false
 
+-- for Avante, but don't know how it works
+vim.opt.laststatus = 3

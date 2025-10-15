@@ -158,7 +158,7 @@ return {
       desc = "Show Shell Info",
     },
     {
-      "<leader>fw",
+      "<leader>fl",
       function()
         Snacks.terminal(shell_manager:get_shell_cmd(), {})
       end,

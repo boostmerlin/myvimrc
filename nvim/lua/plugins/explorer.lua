@@ -24,6 +24,7 @@ return {
           layout = { preset = "sidebar", preview = false },
         },
       },
+      ui_select = true,
     },
     explorer = {
       auto_close = true,
