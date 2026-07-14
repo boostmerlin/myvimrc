@@ -4,6 +4,17 @@
     "default_command": "im-select-mspy",
     "default_im_select": "2052-0"
   },
+  "cpp": {
+    "clangd": {
+      "path_prepend": [
+        "C:/msys64/mingw64/bin"
+      ],
+      "query_drivers": [
+        "C:/msys64/mingw64/bin/g++.exe",
+        "C:/msys64/mingw64/bin/gcc.exe"
+      ]
+    }
+  },
   "lang": ["python"],
   "font": "0xProto Nerd Font Mono:h11"
 }

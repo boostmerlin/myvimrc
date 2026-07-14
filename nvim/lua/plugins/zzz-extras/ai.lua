@@ -1,3 +1,4 @@
+-- Avante is enabled from workspace-nvim.json via zzz-extras.
 return {
   {
     "yetone/avante.nvim",
@@ -62,39 +63,41 @@ return {
     dependencies = {
       "Kaiser-Yang/blink-cmp-avante",
     },
-    opts = {
-      sources = {
-        default = { "avante" },
-        providers = {
+    opts = function(_, opts)
+      opts.sources = opts.sources or {}
+      opts.sources.default = opts.sources.default or { "lsp", "path", "snippets", "buffer" }
+      if not vim.tbl_contains(opts.sources.default, "avante") then
+        table.insert(opts.sources.default, "avante")
+      end
+
+      opts.sources.providers = opts.sources.providers or {}
+      opts.sources.providers.avante = {
+        module = "blink-cmp-avante",
+        name = "Avante",
+        opts = {
+          -- options for blink-cmp-avante
+          kind_icons = {
+            AvanteCmd = "󰒓", -- default icon
+          },
           avante = {
-            module = "blink-cmp-avante",
-            name = "Avante",
-            opts = {
-              -- options for blink-cmp-avante
-              kind_icons = {
-                AvanteCmd = "󰒓", -- default icon
-              },
-              avante = {
-                command = {
-                  get_kind_name = function(_)
-                    return "AvanteCmd" -- this is default
-                  end,
-                },
-                mention = {
-                  get_kind_name = function(_)
-                    return "Avante"
-                  end,
-                },
-                shortcut = {
-                  get_kind_name = function(_)
-                    return "Avante"
-                  end,
-                },
-              },
+            command = {
+              get_kind_name = function(_)
+                return "AvanteCmd" -- this is default
+              end,
+            },
+            mention = {
+              get_kind_name = function(_)
+                return "Avante"
+              end,
+            },
+            shortcut = {
+              get_kind_name = function(_)
+                return "Avante"
+              end,
             },
           },
         },
-      },
-    },
+      }
+    end,
   },
 }

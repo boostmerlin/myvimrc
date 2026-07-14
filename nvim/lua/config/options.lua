@@ -11,3 +11,10 @@ vim.g.lazyvim_blink_main = false
 
 -- for Avante, but don't know how it works
 vim.opt.laststatus = 3
+
+-- vim.opt.grepprg = "rg --vimgrep --smart-case"
+-- vim.opt.grepformat = "%f:%l:%c:%m"
+
+if vim.fn.has("win32") == 1 then
+  vim.opt.shellpipe = ">%s 2>&1"
+end

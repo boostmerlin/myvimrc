@@ -1,6 +1,8 @@
+local ws = require("workspace")
+
 return {
   {
-    "williamboman/mason.nvim",
+    "mason-org/mason.nvim",
     opts = function(_, opts)
       table.insert(opts.ensure_installed, "cpplint")
     end,
@@ -35,8 +37,34 @@ return {
       -- A list of adapters to install if they're not already installed.
       -- This setting has no relation with the `automatic_installation` setting.
       ensure_installed = {
-        "cppdbg"
+        "cppdbg",
       },
-    }
+    },
+  },
+  {
+    "neovim/nvim-lspconfig",
+    opts = function(_, opts)
+      local clangd = opts.servers.clangd
+      local config = ws.getOrDefault("cpp", "clangd", {})
+      local path_prepend = config.path_prepend or {}
+
+      -- 保证 g++ 启动 cc1plus.exe 时能找到 MinGW 的 DLL
+      if #path_prepend > 0 then
+        local separator = package.config:sub(1, 1) == "\\" and ";" or ":"
+        clangd.cmd_env = clangd.cmd_env or {}
+        clangd.cmd_env.PATH = table.concat(path_prepend, separator) .. separator .. vim.env.PATH
+      end
+
+      -- 允许 clangd 查询 GCC 的标准库头文件和目标平台
+      local query_drivers = config.query_drivers or {}
+      if #query_drivers > 0 then
+        clangd.cmd = clangd.cmd or { "clangd" }
+        local query_driver = "--query-driver=" .. table.concat(query_drivers, ",")
+
+        if not vim.tbl_contains(clangd.cmd, query_driver) then
+          table.insert(clangd.cmd, query_driver)
+        end
+      end
+    end,
   },
 }

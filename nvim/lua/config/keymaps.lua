@@ -13,6 +13,13 @@ vim.keymap.set(
   { noremap = true, silent = false, desc = "CD to Current Buffer" }
 )
 
+-- 复制并显示当前文件的绝对路径
+vim.keymap.set("n", "<leader>fy", function()
+  local path = vim.fn.expand("%:p:h")
+  vim.fn.setreg("+", path)
+  print(path)
+end, { desc = "Copy Current File Path" })
+
 -- 映射leader + jr为切换到LazyVim根目录
 if LazyVim then
   vim.keymap.set("n", "<leader>jr", function()

@@ -98,7 +98,7 @@ map <leader>o <Action>(FileStructurePopup)
 
 " find/find
 nnoremap <Leader>fr :action RecentFiles<CR> " 打开过的历史记录文件夹
-nnoremap <Leader>fp :action ShowFilePath<CR> " 显示当前文件的文件路径
+nnoremap <Leader>fy :action ShowFilePath<CR> " 显示当前文件的文件路径
 "快速 导航/查找
 let g:WhichKeyDesc_FindOrFormat_FindFile = "<leader>ff 查找文件"
 nmap <leader>ff <action>(GotoFile)

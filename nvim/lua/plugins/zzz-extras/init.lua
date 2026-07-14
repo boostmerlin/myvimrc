@@ -1,7 +1,8 @@
 -- extra config for specific languages. default is in Zzz...
 -- BUT:
 -- you MAY MUST enable plugin in :LazyExtra first!
--- e.g. for python, enable `lazyvim.plugins.extras.lang.python`
+-- e.g. for python: 
+-- enable `lazyvim.plugins.extras.lang.python`
 -- test.core
 -- dap.core
 
