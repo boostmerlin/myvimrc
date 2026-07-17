@@ -44,14 +44,14 @@ return {
       function()
         require("neo-tree.command").execute({ toggle = false, dir = LazyVim.root() })
       end,
-      desc = "Explorer NeoTree (Root Dir)",
+      desc = "Explorer (Root Dir)",
     },
     {
       "<leader>fE",
       function()
         require("neo-tree.command").execute({ toggle = false, dir = vim.uv.cwd() })
       end,
-      desc = "Explorer NeoTree (cwd)",
+      desc = "Explorer (cwd)",
     },
   },
   opts = {

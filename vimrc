@@ -150,7 +150,7 @@ Plug 'editorconfig/editorconfig-vim'
 " vim-markdown 也依赖版tabular
 Plug 'plasticboy/vim-markdown'
 " 中国人写的，支持下, https://github.com/iamcco/markdown-preview.vim
-Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
+" Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
 " ==============代码支持插件
 Plug 'liuchengxu/vim-which-key', { 'on': ['WhichKey', 'WhichKey!'] }
 

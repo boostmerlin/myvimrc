@@ -2,6 +2,9 @@ return {
   "folke/snacks.nvim",
   ---@type snacks.Config
   opts = {
+    notifier = {
+      width = { min = 40, max = 0.6 },
+    },
     dashboard = {
       -- your dashboard configuration comes here
       -- or leave it empty to use the default settings
