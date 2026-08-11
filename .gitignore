@@ -6,3 +6,4 @@ lazy-lock.json
 workspace-nvim.json
 config.toml
 ginit.vim
+spell/

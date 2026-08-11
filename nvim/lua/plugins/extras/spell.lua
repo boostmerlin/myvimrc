@@ -33,14 +33,5 @@ return {
       load_langs = { "zh-CN", "en-US" },
       path = vim.fn.stdpath("config") .. "/spell",
     },
-    -- LazyVim 对文本类型会强制开启内置 spell，ltex_plus 已接管该职责
-    init = function()
-      vim.api.nvim_create_autocmd("FileType", {
-        pattern = { "text", "plaintex", "typst", "gitcommit", "markdown" },
-        callback = function()
-          vim.opt_local.spell = false
-        end,
-      })
-    end,
   },
 }
