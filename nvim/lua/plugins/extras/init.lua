@@ -12,7 +12,7 @@ local ws = require("workspace")
 local specs = {}
 
 for _, v in ipairs(ws.getOrDefault("lang", {})) do
-  table.insert(specs, require("plugins/zzz-extras/" .. v))
+  table.insert(specs, require("plugins/extras/" .. v))
 end
 
 return specs

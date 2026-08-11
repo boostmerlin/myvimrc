@@ -1,4 +1,4 @@
--- Avante is enabled from workspace-nvim.json via zzz-extras.
+-- Avante is enabled from workspace-nvim.json via extras.
 return {
   {
     "yetone/avante.nvim",
@@ -10,12 +10,10 @@ return {
     dependencies = {
       "nvim-lua/plenary.nvim",
       "MunifTanjim/nui.nvim",
-      -- Required when using Copilot as provider. Run :Copilot auth in Neovim to sign in.
-      { "zbirenbaum/copilot.lua", cmd = { "Copilot" } },
+      "zbirenbaum/copilot.lua",
       -- Optional: image paste support (Windows: set use_absolute_path = true)
       {
         "HakonHarnes/img-clip.nvim",
-        event = "VeryLazy",
         opts = {
           default = {
             embed_image_as_base64 = false,
@@ -41,7 +39,6 @@ return {
       -- Stability: disable auto suggestions to avoid rare highlight edge cases
       behaviour = {
         auto_suggestions = false,
-        auto_suggestions_respect_ignore = true,
         auto_focus_sidebar = true,
         auto_approve_tool_permissions = false,
       },
@@ -65,7 +62,6 @@ return {
     },
     opts = function(_, opts)
       opts.sources = opts.sources or {}
-      opts.sources.default = opts.sources.default or { "lsp", "path", "snippets", "buffer" }
       if not vim.tbl_contains(opts.sources.default, "avante") then
         table.insert(opts.sources.default, "avante")
       end
@@ -74,29 +70,7 @@ return {
       opts.sources.providers.avante = {
         module = "blink-cmp-avante",
         name = "Avante",
-        opts = {
-          -- options for blink-cmp-avante
-          kind_icons = {
-            AvanteCmd = "󰒓", -- default icon
-          },
-          avante = {
-            command = {
-              get_kind_name = function(_)
-                return "AvanteCmd" -- this is default
-              end,
-            },
-            mention = {
-              get_kind_name = function(_)
-                return "Avante"
-              end,
-            },
-            shortcut = {
-              get_kind_name = function(_)
-                return "Avante"
-              end,
-            },
-          },
-        },
+        opts = {},
       }
     end,
   },

@@ -18,7 +18,7 @@ local specs = {
   -- add LazyVim and import its plugins
   { "LazyVim/LazyVim", import = "lazyvim.plugins" },
   -- import LazyVim extras enabled by workspace-nvim.json
-  { import = "plugins.zzz-extras.imports" },
+  { import = "plugins.extras.imports" },
   -- import/override with your plugins
   { import = "plugins" },
 }
@@ -33,6 +33,9 @@ require("lazy").setup({
     -- have outdated releases, which may break your Neovim install.
     version = false, -- always use the latest git commit
     -- version = "*", -- try installing the latest stable version for plugins that support semver
+  },
+  git = {
+    timeout = 360, -- kill processes that take more than 5 minutes
   },
   install = { colorscheme = { "tokyonight", "habamax" } },
   checker = {
