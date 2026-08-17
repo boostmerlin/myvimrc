@@ -328,7 +328,7 @@ else
 endif
 
 " 需要安装ag https://github.com/ggreer/the_silver_searcher
-let g:ctrlsf_ackprg = 'ag'
+" let g:ctrlsf_ackprg = 'ag'
 if ASYNC()
     let g:ctrlsf_search_mode = 'async'
 endif
@@ -454,8 +454,10 @@ nmap <F4> :browse oldfiles<CR>
 nnoremap <silent> <leader>. :cd %:h<CR>
 " nnoremap <silent> <leader><leader>. :exec("NERDTree ".expand('%:h'))<CR>
 
-noremap <F6> :silent execute("vimgrep/" . expand("<cword>") . '/j ' . '*.' . expand('%:e'))<CR> \| :copen<CR>
-noremap <C-F6> :silent execute("vimgrep/" . expand("<cword>") . '/j ' . '**/*.' . expand('%:e'))<CR> \| :copen<CR>
+" Search cword in files with current extension (flat / recursive)
+nnoremap <silent> <leader>gw :<C-u>let w=escape(expand('<cword>'), '/\\')<Bar>execute 'silent vimgrep /'.w.'/gj *.' . expand('%:e')<Bar>copen<CR>
+nnoremap <silent> <leader>gW :<C-u>let w=escape(expand('<cword>'), '/\\')<Bar>execute 'silent vimgrep /'.w.'/gj **/*.' . expand('%:e')<Bar>copen<CR>
+
 " nmap <SPACE> /
 nmap <F3> :cn<CR>
 nmap <S-F3> :cp<CR>
@@ -551,8 +553,6 @@ inoremap <c-u> <c-g>u<c-u> # 增加一个撤销点<c-g>u
 inoremap <c-w> <c-g>u<c-w>
 "将tab替换为空格
 nmap <LEADER>rts :%s/\t/    /g<CR>
-
-nnoremap g0 :set relativenumber!<CR> " 切换显示相对行号
 
 " surround
 " 不定义任何快捷键?

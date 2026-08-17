@@ -17,7 +17,7 @@ local extra_imports = {
 
 local specs = {}
 
-for _, lang in ipairs(ws.getOrDefault("lang", {})) do
+for _, lang in ipairs(ws.getOrDefault("extras", {})) do
   for _, import in ipairs(extra_imports[lang] or {}) do
     table.insert(specs, { import = import })
   end

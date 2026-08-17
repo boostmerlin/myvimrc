@@ -1,10 +1,26 @@
 return {
-  "smoka7/multicursors.nvim",
+  "boostmerlin/multicursors.nvim",
   event = "VeryLazy",
   dependencies = {
     "nvimtools/hydra.nvim",
   },
-  opts = {},
+  opts = {
+     hint_config = {
+        float_opts = {
+            border = 'rounded',
+        },
+        position = 'bottom-right',
+    },
+    generate_hints = {
+        normal = true,
+        insert = true,
+        extend = true,
+        config = {
+            column_count = 1,
+            max_hint_length = 33,
+        },
+    },
+  },
   cmd = { "MCstart", "MCvisual", "MCclear", "MCpattern", "MCvisualPattern", "MCunderCursor" },
   keys = {
     {
@@ -14,10 +30,17 @@ return {
       desc = "MC on Word or Visual",
     },
     {
-      mode = { "v", "n" },
-      "<leader>mvp",
-      "<cmd>MCvisualPattern<cr>",
-      desc = "MC on (last)Visual with Pattern",
+      mode = { "n", "v" },
+      "<leader>mp",
+      function()
+        local mode = vim.fn.mode()
+        if mode == "v" or mode == "V" or mode == "\x16" then
+          vim.cmd("MCvisualPattern")
+        else
+          vim.cmd("MCpattern")
+        end
+      end,
+      desc = "MC on Pattern (visual or normal)",
     },
     {
       mode = { "n" },
@@ -27,15 +50,9 @@ return {
     },
     {
       mode = { "n" },
-      "<leader>ml",
+      "<leader>mv",
       "<cmd>MCvisual<cr>",
       desc = "MC on Last Visual(gv)",
-    },
-    {
-      mode = { "n" },
-      "<leader>mp",
-      "<cmd>MCpattern<cr>",
-      desc = "MC on Pattern",
     },
     {
       "<C-n>",

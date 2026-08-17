@@ -1,7 +1,7 @@
 -- extra config for specific languages. default is in Zzz...
 -- BUT:
 -- you MAY MUST enable plugin in :LazyExtra first!
--- e.g. for python: 
+-- e.g. for python:
 -- enable `lazyvim.plugins.extras.lang.python`
 -- test.core
 -- dap.core
@@ -11,7 +11,7 @@
 local ws = require("workspace")
 local specs = {}
 
-for _, v in ipairs(ws.getOrDefault("lang", {})) do
+for _, v in ipairs(ws.getOrDefault("extras", {})) do
   table.insert(specs, require("plugins/extras/" .. v))
 end
 

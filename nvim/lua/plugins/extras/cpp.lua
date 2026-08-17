@@ -46,14 +46,6 @@ return {
     opts = function(_, opts)
       local clangd = opts.servers.clangd
       local config = ws.getOrDefault("cpp", "clangd", {})
-      local path_prepend = config.path_prepend or {}
-
-      -- 保证 g++ 启动 cc1plus.exe 时能找到 MinGW 的 DLL
-      if #path_prepend > 0 then
-        local separator = package.config:sub(1, 1) == "\\" and ";" or ":"
-        clangd.cmd_env = clangd.cmd_env or {}
-        clangd.cmd_env.PATH = table.concat(path_prepend, separator) .. separator .. vim.env.PATH
-      end
 
       -- 允许 clangd 查询 GCC 的标准库头文件和目标平台
       local query_drivers = config.query_drivers or {}
@@ -64,6 +56,16 @@ return {
         if not vim.tbl_contains(clangd.cmd, query_driver) then
           table.insert(clangd.cmd, query_driver)
         end
+      end
+    end,
+  },
+  {
+    "Civitasv/cmake-tools.nvim",
+    opts = function(_, opts)
+      local config = ws.getOrDefault("cpp", "cmake", {})
+
+      for key, value in pairs(config) do
+        opts[key] = value
       end
     end,
   },

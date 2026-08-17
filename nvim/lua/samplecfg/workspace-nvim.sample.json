@@ -4,17 +4,29 @@
     "default_command": "im-select-mspy",
     "default_im_select": "2052-0"
   },
+  "path_prepend": [
+    "C:/msys64/mingw64/bin"
+  ],
   "cpp": {
     "clangd": {
-      "path_prepend": [
-        "C:/msys64/mingw64/bin"
-      ],
       "query_drivers": [
         "C:/msys64/mingw64/bin/g++.exe",
         "C:/msys64/mingw64/bin/gcc.exe"
       ]
+    },
+    "cmake": {
+      "cmake_command": "C:/msys64/mingw64/bin/cmake.exe",
+      "ctest_command": "C:/msys64/mingw64/bin/ctest.exe",
+      "cmake_generate_options": [
+        "-DCMAKE_EXPORT_COMPILE_COMMANDS=1",
+        "-G",
+        "Ninja",
+        "-DCMAKE_MAKE_PROGRAM=C:/msys64/mingw64/bin/ninja.exe",
+        "-DCMAKE_C_COMPILER=C:/msys64/mingw64/bin/gcc.exe",
+        "-DCMAKE_CXX_COMPILER=C:/msys64/mingw64/bin/g++.exe"
+      ]
     }
   },
-  "lang": ["python"],
+  "extras": ["python"],
   "font": "0xProto Nerd Font Mono:h10"
 }
