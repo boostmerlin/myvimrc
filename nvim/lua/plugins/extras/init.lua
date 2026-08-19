@@ -11,7 +11,7 @@
 local ws = require("workspace")
 local specs = {}
 
-for _, v in ipairs(ws.getOrDefault("extras", {})) do
+for _, v in ipairs(ws.get_or("extras", {})) do
   table.insert(specs, require("plugins/extras/" .. v))
 end
 

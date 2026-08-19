@@ -4,7 +4,7 @@
 -- bootstrap lazy.nvim, LazyVim and your plugins
 local ws = require("workspace")
 
-local path_prepend = ws.getOrDefault("path_prepend", {})
+local path_prepend = ws.get_or("path_prepend", {})
 if #path_prepend > 0 then
   local separator = package.config:sub(1, 1) == "\\" and ";" or ":"
   local prefix = table.concat(path_prepend, separator)

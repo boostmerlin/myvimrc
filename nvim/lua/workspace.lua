@@ -1,15 +1,17 @@
--- mv workspace-nvim.json to config path
 local M = {}
 
-local function is_list(t)
-  if type(t) ~= "table" then
+-- private state
+local _loaded = false
+local _path = vim.fn.stdpath("config") .. "/workspace-nvim.json"
+
+---@param value table
+---@return boolean
+local function is_array(value)
+  if type(value) ~= "table" then
     return false
   end
-
-  local count = 0
-  local max = 0
-
-  for k, _ in pairs(t) do
+  local count, max = 0, 0
+  for k in pairs(value) do
     if type(k) ~= "number" or k <= 0 or math.floor(k) ~= k then
       return false
     end
@@ -18,41 +20,36 @@ local function is_list(t)
     end
     count = count + 1
   end
-
   return max == count
 end
 
 ---@param value any
 ---@param indent string
-local function encode(value, indent)
-  local t = type(value)
-
-  if t == "string" then
+---@return string?
+local function to_json(value, indent)
+  local vtype = type(value)
+  if vtype == "string" then
     return string.format("%q", value)
-  elseif t == "number" or t == "boolean" then
+  elseif vtype == "number" or vtype == "boolean" then
     return tostring(value)
-  elseif t == "table" then
-    local list = is_list(value)
+  elseif vtype == "table" then
     local parts = {}
     local next_indent = indent .. "  "
-
-    if list then
-      ---@diagnostic disable-next-line: no-unknown
-      for _, v in ipairs(value) do
-        local e = encode(v, next_indent)
-        if e then
-          table.insert(parts, next_indent .. e)
+    if is_array(value) then
+      for _, item in ipairs(value) do
+        local encoded = to_json(item, next_indent)
+        if encoded then
+          table.insert(parts, next_indent .. encoded)
         end
       end
       return "[\n" .. table.concat(parts, ",\n") .. "\n" .. indent .. "]"
     else
       local keys = vim.tbl_keys(value)
       table.sort(keys)
-      ---@diagnostic disable-next-line: no-unknown
-      for _, k in ipairs(keys) do
-        local e = encode(value[k], next_indent)
-        if e then
-          table.insert(parts, next_indent .. string.format("%q", k) .. ": " .. e)
+      for _, key in ipairs(keys) do
+        local encoded = to_json(value[key], next_indent)
+        if encoded then
+          table.insert(parts, next_indent .. string.format("%q", key) .. ": " .. encoded)
         end
       end
       return "{\n" .. table.concat(parts, ",\n") .. "\n" .. indent .. "}"
@@ -60,43 +57,12 @@ local function encode(value, indent)
   end
 end
 
-M.data = {}
-local loaded = false
-local path = vim.fn.stdpath("config") .. "/workspace-nvim.json"
-
-function M.load()
-  local f = io.open(path, "r")
-  if f then
-    local data = f:read("*a")
-    -- vim.notify("Loading workspace config from " .. path)
-    f:close()
-    local ok, json = pcall(vim.json.decode, data, { luanil = { object = true, array = true } })
-    if ok then
-      M.data = json
-      local env = json["env"]
-      if env ~= nil then
-        for key, value in pairs(env) do
-          vim.fn.setenv(key, value)
-        end
-      end
-    end
-  end
-  loaded = true
-  return M
-end
-
-function M.save()
-  local f = io.open(path, "w")
-  if f then
-    f:write(encode(M.data, ""))
-    f:close()
-  end
-end
-
-local function getFromData(data, ...)
+---@param data table
+---@return any
+local function get_nested(data, ...)
   local value = data
-  for _, v in ipairs({ ... }) do
-    value = value[v]
+  for _, key in ipairs({ ... }) do
+    value = value[key]
     if value == nil then
       break
     end
@@ -104,27 +70,56 @@ local function getFromData(data, ...)
   return value
 end
 
+local function ensure_loaded()
+  if not _loaded then
+    M.load()
+  end
+end
+
+M.data = {}
+
+function M.load()
+  local file = io.open(_path, "r")
+  if file then
+    local raw = file:read("*a")
+    file:close()
+    local ok, decoded = pcall(vim.json.decode, raw, { luanil = { object = true, array = true } })
+    if ok then
+      M.data = decoded
+      local env = decoded["env"]
+      if env ~= nil then
+        for key, value in pairs(env) do
+          vim.fn.setenv(key, value)
+        end
+      end
+    end
+  end
+  _loaded = true
+  return M
+end
+
+function M.save()
+  local file = io.open(_path, "w")
+  if file then
+    file:write(to_json(M.data, ""))
+    file:close()
+  end
+end
+
 function M.get(...)
-  if not loaded then
-    M.load()
-  end
-  return getFromData(M.data, ...)
+  ensure_loaded()
+  return get_nested(M.data, ...)
 end
 
-function M.getOrDefault(...)
-  if not loaded then
-    M.load()
-  end
-
+---Last argument is the default value; preceding arguments are nested keys.
+function M.get_or(...)
+  ensure_loaded()
+  local n = select("#", ...)
+  assert(n >= 2, "get_or needs at least 2 arguments")
   local args = { ... }
-  local n = #args
-  assert(n >= 2, "getOrDefault needs at least 2 arguments")
-  local frontArgs = {}
-  for i = 1, n - 1 do
-    frontArgs[i] = args[i]
-  end
   local default = args[n]
-  local value = getFromData(M.data, unpack(frontArgs))
-  return value == nil and default or value
+  local value = get_nested(M.data, unpack(args, 1, n - 1))
+  return value ~= nil and value or default
 end
+
 return M

@@ -45,7 +45,7 @@ return {
     "neovim/nvim-lspconfig",
     opts = function(_, opts)
       local clangd = opts.servers.clangd
-      local config = ws.getOrDefault("cpp", "clangd", {})
+      local config = ws.get_or("cpp", "clangd", {})
 
       -- 允许 clangd 查询 GCC 的标准库头文件和目标平台
       local query_drivers = config.query_drivers or {}
@@ -62,7 +62,7 @@ return {
   {
     "Civitasv/cmake-tools.nvim",
     opts = function(_, opts)
-      local config = ws.getOrDefault("cpp", "cmake", {})
+      local config = ws.get_or("cpp", "cmake", {})
 
       for key, value in pairs(config) do
         opts[key] = value
