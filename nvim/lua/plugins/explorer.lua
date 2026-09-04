@@ -1,4 +1,5 @@
 local Snacks = require("snacks")
+local workspace = require("workspace")
 local uv = vim.uv or vim.loop
 
 local function remove_path(path)
@@ -200,6 +201,63 @@ local function smart_explorer(dir)
   end)
 end
 
+local function explorer_diff()
+  local picker = Snacks.picker.get({ source = "explorer" })[1]
+  local Util = require("snacks.picker.util")
+  local selected = picker and picker:selected() or {}
+  local paths = vim.tbl_map(Util.path, selected)
+
+  if #paths ~= 2 then
+    Snacks.notify.warn("Select exactly two files")
+    return
+  end
+
+  for _, path in ipairs(paths) do
+    local stat = vim.uv.fs_stat(path)
+    if not stat or stat.type ~= "file" then
+      Snacks.notify.warn("Diff only supports files")
+      return
+    end
+  end
+
+  picker.list:set_selected()
+  vim.cmd("edit " .. vim.fn.fnameescape(paths[1]))
+  vim.cmd("vert diffsplit " .. vim.fn.fnameescape(paths[2]))
+end
+
+local function explorer_external_diff()
+  local picker = Snacks.picker.get({ source = "explorer" })[1]
+  local Util = require("snacks.picker.util")
+  local selected = picker and picker:selected() or {}
+  local paths = vim.tbl_map(Util.path, selected)
+
+  if #paths ~= 2 then
+    Snacks.notify.warn("Select exactly two files")
+    return
+  end
+
+  for _, path in ipairs(paths) do
+    local stat = uv.fs_stat(path)
+    if not stat or stat.type ~= "file" then
+      Snacks.notify.warn("Diff only supports files")
+      return
+    end
+  end
+
+  local command = workspace.get("difftool", "command")
+  if type(command) ~= "string" or command == "" then
+    Snacks.notify.error("No difftool command configured in workspace-nvim.json")
+    return
+  end
+  if vim.fn.executable(command) ~= 1 and not uv.fs_stat(command) then
+    Snacks.notify.error("Difftool executable not found: " .. command)
+    return
+  end
+
+  picker.list:set_selected()
+  vim.fn.jobstart({ command, paths[1], paths[2] }, { detach = true })
+end
+
 return {
   "folke/snacks.nvim",
   opts = {
@@ -231,6 +289,16 @@ return {
     },
   },
   keys = {
+    {
+      "<leader>fd",
+      explorer_diff,
+      desc = "Diff Two Explorer Files",
+    },
+    {
+      "<leader>fD",
+      explorer_external_diff,
+      desc = "External Diff Two Explorer Files",
+    },
     {
       "<leader>je",
       mode = { "n" },

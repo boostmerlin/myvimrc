@@ -1,17 +1,20 @@
 {
-  "im_select": 
-  {
+  "im_select": {
     "default_command": "im-select-mspy",
     "default_im_select": "2052-0"
   },
   "path_prepend": [
     "C:/msys64/mingw64/bin"
   ],
+  "difftool": {
+    "command": "C:/Program Files/Beyond Compare 4/BCompare.exe"
+  },
   "cpp": {
     "clangd": {
       "query_drivers": [
         "C:/msys64/mingw64/bin/g++.exe",
-        "C:/msys64/mingw64/bin/gcc.exe"
+        "C:/msys64/mingw64/bin/gcc.exe",
+        "C:/msys64/mingw64/bin/c++.exe"
       ]
     },
     "cmake": {
@@ -27,6 +30,10 @@
       ]
     }
   },
-  "extras": ["python"],
+  "extras": [
+    "python",
+    "cpp",
+    "spell"
+  ],
   "font": "0xProto Nerd Font Mono:h10"
 }
