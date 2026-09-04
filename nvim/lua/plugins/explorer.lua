@@ -221,6 +221,7 @@ local function explorer_diff()
   end
 
   picker.list:set_selected()
+  vim.api.nvim_set_current_win(picker.main)
   vim.cmd("edit " .. vim.fn.fnameescape(paths[1]))
   vim.cmd("vert diffsplit " .. vim.fn.fnameescape(paths[2]))
 end
@@ -254,8 +255,8 @@ local function explorer_external_diff()
     return
   end
 
-  picker.list:set_selected()
   vim.fn.jobstart({ command, paths[1], paths[2] }, { detach = true })
+  picker.list:set_selected()
 end
 
 return {
