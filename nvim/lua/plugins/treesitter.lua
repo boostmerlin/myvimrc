@@ -2,7 +2,7 @@ return {
   "nvim-treesitter/nvim-treesitter",
   opts = function(_, opts)
     -- -- 启用自动安装
-    -- opts.auto_install = true
+    opts.auto_install = true
     
     -- 定义要移除的语言列表
     local remove_list = {
@@ -10,22 +10,21 @@ return {
       "c",
       "diff",
       "html",
-      "javascript",
-      "jsdoc",
-      "json",
-      "jsonc",
+      -- "javascript",
+      -- "jsdoc",
+      -- "json",
+      -- "jsonc",
       "lua",
       "luadoc",
       "luap",
       "markdown",
       "markdown_inline",
       "printf",
-      "python",
       "query",
       "regex",
       "toml",
-      "tsx",
-      "typescript",
+      -- "tsx",
+      -- "typescript",
       "vim",
       "vimdoc",
       "xml",

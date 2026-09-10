@@ -18,7 +18,7 @@ local specs = {
   -- add LazyVim and import its plugins
   { "LazyVim/LazyVim", import = "lazyvim.plugins" },
   -- import LazyVim extras enabled by workspace-nvim.json
-  { import = "plugins.extras.imports" },
+  { import = "plugins.extras.my_imports" },
   -- import/override with your plugins
   { import = "plugins" },
 }
