@@ -1,9 +1,12 @@
 *.swp
 temp/
+tt.*
+.tests
+doc/tags
+debug
+.repro
+*.log
+data
 
-lazyvim.json
-lazy-lock.json
-workspace-nvim.json
 config.toml
 ginit.vim
-spell/
